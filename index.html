@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
     
+    <!-- PWA Setup (Install App Feature) -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#111111">
+    <meta name="theme-color" content="#E8E8E8">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     
+    <!-- Fonts & Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -50,19 +52,13 @@
 </head>
 <body class="antialiased pb-10 relative">
 
+    <!-- 1. TOAST NOTIFICATIONS -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
-    <div id="install-banner" class="hidden fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[150] bg-[#111111]/90 backdrop-blur-xl border border-white/20 px-8 py-4 rounded-full shadow-2xl flex items-center gap-6 animate-fade-in-up">
-        <span class="text-white font-serif text-xl tracking-wide italic">Aesthetica.</span>
-        <div class="h-6 w-px bg-white/20"></div>
-        <button id="install-btn" class="text-[11px] uppercase tracking-[0.2em] font-bold text-white hover:text-gray-300 transition-colors">
-            Install App ✨
-        </button>
-        <button onclick="document.getElementById('install-banner').classList.add('hidden')" class="ml-2 text-gray-400 hover:text-white text-lg transition-colors">✕</button>
-    </div>
-
+    <!-- 2. MAIN NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
+            <!-- Brand & Location -->
             <div class="flex-shrink-0 flex items-center space-x-4">
                 <span class="text-2xl font-serif font-semibold tracking-[0.15em] uppercase text-premium-dark">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
@@ -71,22 +67,33 @@
                 </div>
             </div>
             
+            <!-- Global Search -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
                 <input type="text" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
                 <button class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
             </div>
 
+            <!-- Profile Menus & Auth -->
             <div class="flex items-center gap-4 md:gap-6">
+                
+                <!-- NEW: Premium Install App Button (Aesthetica Font) -->
+                <button id="install-btn" class="hidden font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-transparent hover:border-premium-dark pb-0.5 transition-all">
+                    Install App ✨
+                </button>
+
+                <!-- User Menu (Hidden till logged in) -->
                 <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">My Orders</button>
                     <button onclick="toggleProfileModal()" class="hover:text-premium-muted transition-colors border-b border-dashed border-premium-dark pb-0.5">AR Profile</button>
                 </div>
+                
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
                 <button class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
 
+    <!-- 3. SECURE CHECKOUT MODAL (RAZORPAY STYLE) -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[4px] w-full max-w-sm relative animate-fade-in-up shadow-2xl">
             <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -110,6 +117,7 @@
         </div>
     </div>
 
+    <!-- 4. MY ORDERS DASHBOARD MODAL -->
     <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
             <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -121,10 +129,12 @@
         </div>
     </div>
 
+    <!-- 5. THE ULTIMATE AR PROFILE MODAL (Live Cam + Photo + Studio + Fit AI) -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4">
         <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
             
+            <!-- Left Side: Camera & 35mm Photo Studio -->
             <div class="w-full md:w-1/2 relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[3/4] group film-grain">
                 <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
                 <img id="ar-uploaded-img" class="hidden absolute inset-0 w-full h-full object-cover z-10 transition-all duration-500" />
@@ -138,6 +148,7 @@
                     <span id="ar-mode-text" class="text-[8px] text-white uppercase tracking-widest font-bold drop-shadow-md">Live AR Map</span>
                 </div>
                 
+                <!-- 35mm Cinematic Controls -->
                 <div id="cinematic-controls" class="hidden absolute top-4 right-4 z-40 flex flex-col gap-2">
                     <button onclick="apply35mmFilter()" class="bg-black/60 backdrop-blur-md border border-yellow-500/50 text-yellow-400 text-[8px] uppercase tracking-widest px-2 py-1.5 rounded-sm hover:bg-yellow-500/20 transition shadow-lg">
                         Apply Kodak Portra 400
@@ -154,6 +165,7 @@
                 <input type="file" id="ar-photo-upload" accept="image/*" class="hidden" onchange="handleARPhotoUpload(event)">
             </div>
 
+            <!-- Right Side: Power-Fit Sizing & Aesthetic Vibe Personalization -->
             <div class="w-full md:w-1/2 flex flex-col justify-center text-white">
                 <h2 class="text-2xl font-serif mb-2 text-white">AR Drape & Power-Fit</h2>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6">AI computes exact sizing based on frame density.</p>
@@ -182,6 +194,7 @@
                         </select>
                     </div>
                     
+                    <!-- Power-Fit Feedback Box -->
                     <div id="power-fit-box" class="mt-4 p-3 border border-gray-600 bg-gray-800/50 rounded-sm">
                         <span class="text-[8px] text-green-400 uppercase tracking-widest font-bold block mb-1">⚡ Power-Fit AI Result</span>
                         <p id="power-fit-result" class="text-[11px] text-white italic">Enter metrics to calculate perfect size.</p>
@@ -195,6 +208,7 @@
         </div>
     </div>
 
+    <!-- 6. SECURE AUTHENTICATION MODAL (Login/Signup Toggle) -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up shadow-2xl">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -226,27 +240,33 @@
         </div>
     </div>
 
+    <!-- 7. PROMOTION BANNERS (Horizontal Scroll) -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
+            <!-- Banner 1 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div class="flex items-center space-x-2 mb-1"><span class="text-[8px] bg-white text-black px-1.5 py-0.5 uppercase tracking-widest font-bold">The Vault</span><span class="text-[8px] uppercase tracking-widest text-red-400">Ends in 08h 45m</span></div>
                 <h3 class="text-lg font-serif mb-0.5">Vintage Leather Drop.</h3>
                 <p class="text-[10px] text-gray-400 font-light">3 exclusive local jackets available.</p>
             </div>
+            <!-- Banner 2 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-black/50"></div>
                 <div class="relative z-10"><span class="text-[8px] bg-white/20 backdrop-blur-md border border-white/30 text-white px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">Shoppable Feed</span><h3 class="text-lg font-serif mb-0.5">The Lookbook</h3><p class="text-[10px] text-gray-200">Scroll creator vibes.</p></div>
             </div>
+            <!-- Banner 3 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
                 <div class="relative z-10"><span class="text-[8px] border border-premium-dark text-premium-dark px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">For Boutiques</span><h3 class="text-lg font-serif mb-0.5">Sell locally via AI.</h3><p class="text-[10px] text-premium-muted font-light">Drop a photo. We digitize and list it.</p></div>
             </div>
         </div>
     </div>
 
+    <!-- 8. MAIN CONTENT FEEDS -->
     <main class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
+        <!-- Category Navbar -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
             <a href="#" class="text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</a>
             <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</a>
@@ -257,10 +277,12 @@
 
         <div class="space-y-20"> 
             
+            <!-- Live Feed 1: Cheapest Finds (Dynamic Title based on Vibe) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
+                <!-- Dynamic products container -->
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
                         <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -270,10 +292,12 @@
                 </div>
             </section>
 
+            <!-- Live Feed 2: Local Boutiques -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
+                <!-- Dynamic products container -->
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
                         <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -282,6 +306,7 @@
                 </div>
             </section>
 
+            <!-- Creator's Garage (High Ticket P2P Section) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <div>
@@ -290,6 +315,7 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Garage Item 1: Bullet 350 -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
@@ -300,6 +326,7 @@
                             <button onclick="initiateCheckout('RE Bullet 350', 2500, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
                         </div>
                     </div>
+                    <!-- Garage Item 2: Dominar 400 -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1621009897148-5c45ce126b48?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
@@ -313,11 +340,13 @@
                 </div>
             </section>
 
+            <!-- Regular P2P Rentals Section -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Rental Item 1: Motorcycle -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
                         <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
@@ -334,6 +363,7 @@
                         </div>
                     </div>
 
+                    <!-- Rental Item 2: Shirt -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">Live Drop</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
@@ -348,6 +378,7 @@
             </section>
         </div>
 
+        <!-- 9. CREATOR TOOLS (All 4 Cards) -->
         <section class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -357,6 +388,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <!-- Tool 1 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
@@ -365,6 +397,7 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Every checkout triggers access. Get presets, audio loops, and viral captions.</p>
                     </div>
                 </div>
+                <!-- Tool 2 (Triggers AR Profile) -->
                 <div onclick="toggleProfileModal()" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-gray-100 text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md border border-gray-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></div>
@@ -373,6 +406,7 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Activate live capture device or upload frame portraits for garment mapping.</p>
                     </div>
                 </div>
+                <!-- Tool 3 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="flex -space-x-3 mb-4 group-hover:scale-110 transition-transform duration-500">
@@ -384,6 +418,7 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Planning complex studio captures? Share structural costs for high-tier props.</p>
                     </div>
                 </div>
+                <!-- Tool 4 -->
                 <div class="bg-premium-dark text-white p-6 rounded-[2px] shadow-xl hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
@@ -397,6 +432,7 @@
         </section>
     </main>
 
+    <!-- 10. PREMIUM FOOTER -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -420,9 +456,10 @@
         </div>
     </footer>
 
+    <!-- 11. FULL SUPABASE & APPLICATION LOGIC SCRIPT (DO NOT REMOVE OR EDIT) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase DB Connection (Ensure your RLS policies allow inserts!)
+        // Supabase DB Connection
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -432,19 +469,25 @@
         let currentOrderPayload = {};
         let isLoginMode = true; 
 
-        // PWA Install Prompt Logic
+        // PWA Install Prompt Logic (Moved to Premium Navbar Button)
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            document.getElementById('install-banner').classList.remove('hidden');
+            e.preventDefault(); 
+            deferredPrompt = e;
+            document.getElementById('install-btn').classList.remove('hidden'); // Show Navbar Install Button
         });
+        
         document.getElementById('install-btn').addEventListener('click', async () => {
             if(deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if(outcome === 'accepted') document.getElementById('install-banner').classList.add('hidden');
+                if(outcome === 'accepted') {
+                    document.getElementById('install-btn').classList.add('hidden');
+                }
                 deferredPrompt = null;
-            } else showToast("Use browser menu to Install (Add to Home Screen)");
+            } else {
+                showToast("App is already installed or use browser menu to Add to Home Screen.");
+            }
         });
 
         // Toast Feedback System
@@ -619,13 +662,12 @@
             const phys = document.getElementById('profile-body').value;
             const box = document.getElementById('power-fit-result');
             
-            // Personalized touch for heavy lifters vs standard
             if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape.";
             else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic.";
             else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
-        // Auth, Session & Data Personalization (Fully Restored)
+        // Auth, Session & Data Personalization
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
