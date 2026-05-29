@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
-    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     
-    <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -41,21 +39,25 @@
         .glowing-border::before { content: ""; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color 0.5s ease; pointer-events: none; }
         .glowing-border:hover::before { border-color: rgba(17,17,17,0.3); }
         
-        /* Toast Animations */
+        /* Toast Notification Animations */
         .toast-enter { transform: translateY(100%); opacity: 0; }
         .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s ease-out; }
         .toast-leave-active { transform: translateY(100%); opacity: 0; transition: all 0.3s ease-in; }
+
+        /* AR Scanner Laser Line Animation */
+        @keyframes scan {
+            0% { transform: translateY(0); opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(300px); opacity: 1; }
+        }
     </style>
 </head>
 <body class="antialiased pb-10">
 
-    <!-- 1. TOAST NOTIFICATIONS CONTAINER -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2"></div>
 
-    <!-- 2. NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
-            <!-- Logo & Location -->
             <div class="flex-shrink-0 flex items-center space-x-4">
                 <span class="text-2xl font-serif font-semibold tracking-[0.15em] uppercase text-premium-dark">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
@@ -64,7 +66,6 @@
                 </div>
             </div>
 
-            <!-- Search Bar (For Cuelinks Price Match Later) -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm transition-all duration-300 focus-within:ring-1 focus-within:ring-premium-dark focus-within:border-premium-dark">
                 <input type="text" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
                 <button class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors duration-300">
@@ -72,9 +73,7 @@
                 </button>
             </div>
 
-            <!-- Profile Menu Options & Auth -->
             <div class="flex items-center gap-6">
-                <!-- Logged In User Tools -->
                 <div id="user-menu" class="hidden md:flex items-center space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">My Orders</button>
                     <button onclick="toggleProfileModal()" class="hover:text-premium-muted transition-colors border-b border-dashed border-premium-dark pb-0.5">AR Profile</button>
@@ -86,7 +85,6 @@
         </div>
     </nav>
 
-    <!-- 3. MY ORDERS MODAL -->
     <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col">
             <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
@@ -95,42 +93,67 @@
             <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Track your aesthetic purchases & rentals</p>
             
             <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-4 pr-2">
-                <p class="text-center text-sm text-gray-400 italic mt-10 animate-pulse">Loading database...</p>
+                <p class="text-center text-sm text-gray-400 italic mt-10 animate-pulse">Syncing application pipeline...</p>
             </div>
         </div>
     </div>
 
-    <!-- 4. AR FIT PROFILE MODAL -->
-    <div id="profile-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
-        <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up">
-            <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
+    <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center">
+        <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6">
+            <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50">✕</button>
             
-            <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">AR Drape Profile</h2>
-            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Set your metrics for AI fitting</p>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Height</label>
-                    <input type="text" id="profile-height" class="w-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-premium-dark rounded-sm" placeholder="e.g., 5'7&quot;">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Physique / Body Type</label>
-                    <select id="profile-body" class="w-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-premium-dark rounded-sm bg-white">
-                        <option value="Lean">Lean</option>
-                        <option value="Athletic" selected>Athletic / Muscular</option>
-                        <option value="Average">Average</option>
-                        <option value="Broad">Broad</option>
-                    </select>
+            <div class="w-full md:w-1/2 relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[3/4] group">
+                <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
+                <img id="ar-uploaded-img" class="hidden absolute inset-0 w-full h-full object-cover z-10" />
+                
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 pointer-events-none z-20"></div>
+                <div class="absolute inset-0 border-2 border-white/20 m-4 rounded-sm pointer-events-none z-20"></div>
+                
+                <div class="absolute top-0 left-0 w-full h-0.5 bg-green-400 shadow-[0_0_10px_#4ade80] animate-[scan_2s_ease-in-out_infinite] pointer-events-none z-30"></div>
+                
+                <div class="absolute top-4 left-4 flex items-center gap-2 z-30">
+                    <span id="ar-live-dot" class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <span id="ar-mode-text" class="text-[8px] text-white uppercase tracking-widest font-bold drop-shadow-md">Live AR Map</span>
                 </div>
                 
-                <button onclick="saveProfile()" id="save-profile-btn" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-medium py-3 mt-4 hover:bg-gray-800 transition shadow-sm rounded-sm">
-                    Save Profile Metrics
+                <div class="absolute bottom-4 left-0 w-full text-center z-30 pointer-events-none">
+                    <p id="ar-status-text" class="text-[9px] text-green-400 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded">Calibrating Frame Engine...</p>
+                </div>
+
+                <button onclick="document.getElementById('ar-photo-upload').click()" class="absolute bottom-4 right-4 z-40 bg-black/40 backdrop-blur-md border border-white/20 text-white text-[8px] uppercase tracking-widest px-2 py-1.5 rounded-sm hover:bg-white/20 transition shadow-lg flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Upload Photo
                 </button>
+                <input type="file" id="ar-photo-upload" accept="image/*" class="hidden" onchange="handleARPhotoUpload(event)">
+            </div>
+
+            <div class="w-full md:w-1/2 flex flex-col justify-center text-white">
+                <h2 class="text-2xl font-serif mb-2 text-white">AR Drape Engine</h2>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6">Map your profile frame with 35mm portrait accuracy</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1">Height Metric</label>
+                        <input type="text" id="profile-height" class="w-full bg-transparent border-b border-gray-600 px-2 py-2 text-sm focus:outline-none focus:border-white text-white placeholder-gray-600" placeholder="e.g., 5'7&quot;">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1">Physique Frame Profile</label>
+                        <select id="profile-body" class="w-full bg-premium-dark border-b border-gray-600 px-2 py-2 text-sm focus:outline-none focus:border-white text-white">
+                            <option value="Lean">Lean Structure</option>
+                            <option value="Athletic" selected>Athletic Profile (V-Taper/Gym)</option>
+                            <option value="Average">Average Proportions</option>
+                            <option value="Broad">Broad Structure</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="saveProfile()" id="save-profile-btn" class="w-full bg-white text-black text-[11px] uppercase tracking-widest font-bold py-3 mt-6 hover:bg-gray-200 transition shadow-sm rounded-sm">
+                        Lock Calibration
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 5. LOGIN / SIGNUP MODAL -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
@@ -138,7 +161,6 @@
             <h2 id="auth-title" class="text-2xl font-serif text-premium-dark mb-6 text-center">Welcome Back.</h2>
             
             <div class="space-y-3 mb-6">
-                <!-- Google Login -->
                 <button onclick="handleOAuth('google')" class="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors shadow-sm rounded-sm">
                     <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.16v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.16C1.43 8.55 1 10.22 1 12s.43 3.45 1.16 4.93l3.68-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.16 7.07l3.68 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                     Continue with Google
@@ -153,26 +175,24 @@
             
             <div class="space-y-4">
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Email</label>
+                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Email Connection</label>
                     <input type="email" id="email-input" class="w-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-premium-dark rounded-sm" placeholder="you@example.com">
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Password</label>
+                    <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Security Keyphrase</label>
                     <input type="password" id="password-input" class="w-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-premium-dark rounded-sm" placeholder="••••••••">
                 </div>
                 <button id="submit-auth-btn" onclick="handleAuth()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-medium py-3 hover:bg-gray-800 transition shadow-sm rounded-sm">Login</button>
             </div>
             <div class="mt-6 text-center text-[10px] uppercase tracking-widest font-medium text-gray-500">
-                <span id="auth-switch-text">New here?</span> 
+                <span id="auth-switch-text">New to ecosystem?</span> 
                 <button onclick="toggleAuthMode()" id="auth-switch-btn" class="text-premium-dark border-b border-premium-dark ml-1 hover:text-gray-500 transition-colors">Create Account</button>
             </div>
         </div>
     </div>
 
-    <!-- 6. HORIZONTAL BANNERS (Promotions) -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll snap-x snap-mandatory pb-4">
-            <!-- Banner 1 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div class="relative z-10 transform group-hover:scale-[1.02] transition-transform duration-500">
@@ -184,7 +204,6 @@
                     <p class="text-[10px] text-gray-400 font-light">3 exclusive local jackets available.</p>
                 </div>
             </div>
-            <!-- Banner 2 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group">
                 <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
@@ -194,7 +213,6 @@
                     <p class="text-[10px] text-gray-200 font-light">Scroll creator vibes. Tap to steal.</p>
                 </div>
             </div>
-            <!-- Banner 3 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
                 <div class="relative z-10">
                     <span class="text-[8px] border border-premium-dark text-premium-dark px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">For Boutiques</span>
@@ -205,10 +223,8 @@
         </div>
     </div>
 
-    <!-- 7. MAIN CONTENT FEED -->
     <main class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up" style="animation-delay: 0.1s;">
         
-        <!-- Category Navbar -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
             <a href="#" class="text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</a>
             <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</a>
@@ -218,14 +234,13 @@
         </div>
 
         <div class="space-y-20"> 
-            <!-- Live Database Sections -->
+            
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Javascript will inject cards here -->
-                    <p class="text-sm text-gray-400 italic">Waiting for database sync...</p>
+                    <p class="text-sm text-gray-400 italic">Waiting for backend pipeline...</p>
                 </div>
             </section>
 
@@ -234,19 +249,15 @@
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Javascript will inject cards here -->
-                    <p class="text-sm text-gray-400 italic">Connecting to local stores...</p>
+                    <p class="text-sm text-gray-400 italic">Mapping nearest boutiques...</p>
                 </div>
             </section>
             
-            <!-- P2P Rentals Section -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    
-                    <!-- Rental Card 1 -->
                     <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-200 transition-all">
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
                         <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
@@ -265,8 +276,7 @@
                         </div>
                     </div>
 
-                    <!-- Demo Buy Item (Fallback) -->
-                     <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative group flex flex-col shadow-sm border border-transparent hover:border-gray-200 transition-all">
+                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative group flex flex-col shadow-sm border border-transparent hover:border-gray-200 transition-all">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">Live Drop</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
@@ -279,106 +289,100 @@
             </section>
         </div>
 
-        <!-- 8. CREATOR ECOSYSTEM TOOLS -->
         <section class="pt-24 pb-6 mt-10 border-t border-gray-300" style="animation-delay: 0.2s;">
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h2 class="text-3xl font-serif text-premium-dark mb-1">Creator Tools</h2>
-                    <span class="text-[10px] uppercase tracking-[0.2em] text-premium-muted">Elevate & Monetize Your Aesthetic</span>
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-premium-muted">Elevate & Monetize Your Aesthetic Space</span>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Tool 1 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform duration-500 shadow-sm">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                         </div>
-                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Digital Asset</span>
+                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Digital Asset Pack</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">Aesthetic Blueprint</h3>
-                        <p class="text-[11px] text-premium-muted leading-relaxed">Every checkout unlocks a curated kit. Get presets, audios, and viral scripts.</p>
+                        <p class="text-[11px] text-premium-muted leading-relaxed">Every checkout triggers access. Get presets, audio loops, and viral captions structured to your niche.</p>
                     </div>
                 </div>
 
-                <!-- Tool 2 -->
                 <div onclick="toggleProfileModal()" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-gray-100 text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform duration-500 border border-gray-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                         </div>
-                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Hyper-Personalized</span>
+                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Hyper-Personalized AI</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">AR Drape & Fit</h3>
-                        <p class="text-[11px] text-premium-muted leading-relaxed">Input exact metrics. AI maps how traditional clothes drape on your body.</p>
+                        <p class="text-[11px] text-premium-muted leading-relaxed">Activate live capture device or upload frame portraits to compute garment layout mapping.</p>
                     </div>
                 </div>
 
-                <!-- Tool 3 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="flex -space-x-3 mb-4 group-hover:scale-110 transition-transform duration-500">
                             <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-300 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11"></div>
                             <div class="w-10 h-10 rounded-full border-2 border-white bg-premium-dark text-white flex items-center justify-center text-[10px] font-bold shadow-sm">+</div>
                         </div>
-                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Community Engine</span>
+                        <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Collab Subsystem</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">Co-Rent & Collab</h3>
-                        <p class="text-[11px] text-premium-muted leading-relaxed">Teaming up for a shoot? Split the cost of premium props directly in-app.</p>
+                        <p class="text-[11px] text-premium-muted leading-relaxed">Planning complex studio captures? Share structural costs for high-tier props inside regional nodes.</p>
                     </div>
                 </div>
 
-                <!-- Tool 4 -->
                 <div class="bg-premium-dark text-white p-6 rounded-[2px] hover-lift group cursor-pointer shadow-lg flex flex-col justify-between h-full relative overflow-hidden">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform duration-500 shadow-sm">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
-                        <span class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-1 block">Social Commerce</span>
+                        <span class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-1 block">Social Conversion Node</span>
                         <h3 class="text-lg font-serif mb-2">Aesthetic Bounties</h3>
-                        <p class="text-[11px] text-gray-300 leading-relaxed">When followers shop your style combos, you automatically earn cash bounties.</p>
+                        <p class="text-[11px] text-gray-300 leading-relaxed">Lock in affiliate link channels. Secure incoming conversion commissions directly to your vault.</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 9. PROFESSIONAL FOOTER -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Aesthetica</h3>
-                <p class="text-[11px] text-premium-muted leading-relaxed">The ultimate ecosystem for creators to shop, rent, and monetize their aesthetic.</p>
+                <p class="text-[11px] text-premium-muted leading-relaxed">The premier decentralized architecture for creator-led shopping pipelines, rental pools, and automated conversion management.</p>
             </div>
             <div>
-                <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Legal & Support</h3>
+                <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Legal Framework</h3>
                 <ul class="text-[11px] text-premium-muted space-y-2">
-                    <li><a href="#" class="hover:text-premium-dark transition">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-premium-dark transition">Privacy Architecture</a></li>
                     <li><a href="#" class="hover:text-premium-dark transition">Terms of Service</a></li>
-                    <li><a href="mailto:aestheticaworld@gmail.com" class="hover:text-premium-dark transition">Contact Us: aestheticaworld@gmail.com</a></li>
+                    <li><a href="mailto:aestheticaworld@gmail.com" class="hover:text-premium-dark transition">Node Support: aestheticaworld@gmail.com</a></li>
                 </ul>
             </div>
             <div>
-                <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Connect</h3>
-                <p class="text-[11px] text-premium-muted">Join the movement. Tag your fits.</p>
+                <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Ecosystem Hub</h3>
+                <p class="text-[11px] text-premium-muted">Connect your platforms. Monetize framework captures at aestheticaworld@gmail.com</p>
             </div>
         </div>
         <div class="max-w-[1400px] mx-auto mt-12 pt-8 border-t border-gray-100 text-[10px] text-premium-muted text-center uppercase tracking-widest">
-            &copy; 2026 Aesthetica. All rights reserved. Built for the culture.
+            &copy; 2026 Aesthetica Engine. All rights reserved. Configured for high performance.
         </div>
     </footer>
 
-    <!-- 10. SYSTEM LOGIC (Supabase & JS) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase Init
+        // Production System Keys Mapping
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let isLoginMode = true;
         let currentUser = null;
+        let arStream = null;
 
-        // Custom Toast System
+        // Unified Toast Feedback Pipeline
         function showToast(message, type = "success") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -387,6 +391,7 @@
             toast.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('toast-enter-active'), 10);
+            
             setTimeout(() => {
                 toast.classList.remove('toast-enter-active');
                 toast.classList.add('toast-leave-active');
@@ -394,25 +399,101 @@
             }, 3500);
         }
 
-        // Modals Toggles
+        // Overlay Matrix Controllers
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
             document.getElementById('auth-title').innerText = isLoginMode ? 'Welcome Back.' : 'Join Aesthetica.';
             document.getElementById('submit-auth-btn').innerText = isLoginMode ? 'Login' : 'Sign Up';
         }
-        function toggleProfileModal() {
-            if (!currentUser) return showToast("Login required for AR Setup", "error");
-            document.getElementById('profile-modal').classList.toggle('hidden');
-        }
+
         function toggleOrdersModal() {
-            if (!currentUser) return showToast("Login required to view history", "error");
+            if (!currentUser) return showToast("Authenticating credentials required", "error");
             const modal = document.getElementById('orders-modal');
             modal.classList.toggle('hidden');
             if (!modal.classList.contains('hidden')) fetchMyOrders();
         }
 
-        // Authentication Handling
+        // Upgraded AR Matrix Open/Close Trigger with Media Controls
+        async function toggleProfileModal() {
+            if (!currentUser) return showToast("Access restricted. Login required.", "error");
+            
+            const modal = document.getElementById('profile-modal');
+            const videoElement = document.getElementById('ar-video-feed');
+            const imgElement = document.getElementById('ar-uploaded-img');
+            
+            modal.classList.toggle('hidden');
+            
+            if (!modal.classList.contains('hidden')) {
+                // Initialize default view state
+                imgElement.classList.add('hidden');
+                videoElement.classList.remove('hidden');
+                document.getElementById('ar-live-dot').classList.replace('bg-blue-500', 'bg-red-500');
+                document.getElementById('ar-mode-text').innerText = "Live AR Map";
+                document.getElementById('ar-status-text').innerText = "Calibrating Body Frame...";
+                document.getElementById('ar-status-text').className = "text-[9px] text-green-400 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded";
+
+                // Initialize Hardware Capture Device
+                try {
+                    arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                    videoElement.srcObject = arStream;
+                    
+                    setTimeout(() => {
+                        if(imgElement.classList.contains('hidden')) { 
+                            document.getElementById('ar-status-text').innerText = "V-Taper Mapped. Ready.";
+                            document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-white');
+                        }
+                    }, 2500);
+                } catch (err) {
+                    console.error("Device pipeline block:", err);
+                    document.getElementById('ar-status-text').innerText = "Hardware Blocked. Upload Photo instead.";
+                    document.getElementById('ar-status-text').className = "text-[9px] text-red-500 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded";
+                }
+            } else {
+                stopARCamera();
+                document.getElementById('ar-photo-upload').value = ""; 
+            }
+        }
+
+        function stopARCamera() {
+            if (arStream) {
+                arStream.getTracks().forEach(track => track.stop());
+                document.getElementById('ar-video-feed').srcObject = null;
+                arStream = null;
+            }
+        }
+
+        // Processing Photo Storage Stream
+        function handleARPhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                stopARCamera(); 
+                
+                const videoElement = document.getElementById('ar-video-feed');
+                const imgElement = document.getElementById('ar-uploaded-img');
+                
+                videoElement.classList.add('hidden');
+                imgElement.classList.remove('hidden');
+                
+                document.getElementById('ar-live-dot').classList.replace('bg-red-500', 'bg-blue-500');
+                document.getElementById('ar-mode-text').innerText = "Static Profile Map";
+                document.getElementById('ar-status-text').innerText = "Analyzing Frame Metrics...";
+                document.getElementById('ar-status-text').className = "text-[9px] text-blue-400 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded";
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imgElement.src = e.target.result;
+                    
+                    setTimeout(() => {
+                        document.getElementById('ar-status-text').innerText = "Dimensions Extracted. Ready.";
+                        document.getElementById('ar-status-text').classList.replace('text-blue-400', 'text-white');
+                    }, 2000);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Authentication Core
         async function checkSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             updateAuthUI(session?.user);
@@ -439,26 +520,26 @@
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
-            if(!email || !password) return showToast("Credentials missing", "error");
-            document.getElementById('submit-auth-btn').innerText = "Processing...";
+            if(!email || !password) return showToast("Credentials mapping incomplete", "error");
+            document.getElementById('submit-auth-btn').innerText = "Syncing network...";
             try {
                 if (isLoginMode) {
                     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    toggleAuthModal(); updateAuthUI(data.user); showToast("Welcome back!");
+                    toggleAuthModal(); updateAuthUI(data.user); showToast("Ecosystem initialized.");
                 } else {
                     const { data, error } = await supabaseClient.auth.signUp({ email, password });
                     if (error) throw error;
-                    toggleAuthModal(); updateAuthUI(data.user); showToast("Account created!");
+                    toggleAuthModal(); updateAuthUI(data.user); showToast("Ecosystem node registered!");
                 }
             } catch (error) { showToast(error.message, "error"); } 
             finally { document.getElementById('submit-auth-btn').innerText = isLoginMode ? 'Login' : 'Sign Up'; }
         }
 
         async function handleOAuth(provider) { await supabaseClient.auth.signInWithOAuth({ provider, options: { redirectTo: window.location.origin } }); }
-        async function handleLogout() { await supabaseClient.auth.signOut(); updateAuthUI(null); showToast("Logged out safely"); }
+        async function handleLogout() { await supabaseClient.auth.signOut(); updateAuthUI(null); showToast("Node disconnected."); }
 
-        // AR Profile Logic
+        // Metrics Data Entry
         async function loadUserProfile() {
             if (!currentUser) return;
             const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
@@ -467,36 +548,39 @@
                 document.getElementById('profile-body').value = data.body_type || "Athletic";
             }
         }
+
         async function saveProfile() {
             const height = document.getElementById('profile-height').value;
             const body_type = document.getElementById('profile-body').value;
-            document.getElementById('save-profile-btn').innerText = "Saving...";
+            document.getElementById('save-profile-btn').innerText = "Locking metrics...";
+            
             const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, height, body_type });
-            if (!error) { showToast("AR Metrics Locked In!"); setTimeout(toggleProfileModal, 800); }
-            document.getElementById('save-profile-btn').innerText = "Save Profile Metrics";
+            if (!error) { showToast("Calibration Matrix Saved!"); setTimeout(toggleProfileModal, 800); }
+            else { showToast(`Storage block: ${error.message}`, "error"); }
+            document.getElementById('save-profile-btn').innerText = "Lock Calibration";
         }
 
-        // Live Order System
+        // Live Order Router
         async function handleOrderAction(productName, price, type) {
-            if (!currentUser) { toggleAuthModal(); return showToast("Login required to purchase", "error"); }
+            if (!currentUser) { toggleAuthModal(); return showToast("Authentication required.", "error"); }
             try {
                 const { error } = await supabaseClient.from('orders').insert({
                     user_id: currentUser.id, product_name: productName, price: Number(price), order_type: type
                 });
                 if (error) throw error;
-                showToast(`Confirmed: ${productName} added to orders!`);
-            } catch (error) { showToast("DB Error, check settings", "error"); console.error(error); }
+                showToast(`Confirmed: ${productName} tracked in dashboard!`);
+            } catch (error) { showToast(`RLS / Connection failure: ${error.message}`, "error"); }
         }
 
-        // Fetch Order History
+        // Dynamic Order Mapping Renderer
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
-            container.innerHTML = '<p class="text-center text-sm text-gray-400 italic mt-10 animate-pulse">Syncing orders...</p>';
+            container.innerHTML = '<p class="text-center text-sm text-gray-400 italic mt-10 animate-pulse">Syncing chronological records...</p>';
             try {
                 const { data, error } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
                 if (error) throw error;
                 if (data.length === 0) {
-                    container.innerHTML = `<div class="text-center mt-10"><p class="text-sm text-gray-500 font-medium">No orders yet.</p></div>`; return;
+                    container.innerHTML = `<div class="text-center mt-10"><p class="text-sm text-gray-500 font-medium">No system records mapped yet.</p></div>`; return;
                 }
                 container.innerHTML = ''; 
                 data.forEach(order => {
@@ -506,14 +590,14 @@
                     container.innerHTML += `
                         <div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center hover:bg-gray-50 transition-colors">
                             <div><div class="flex items-center gap-3 mb-1"><h4 class="text-sm font-medium text-premium-dark">${order.product_name}</h4>${badge}</div>
-                            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ordered: ${date} • Type: ${order.order_type}</p></div>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Logged: ${date} • Subsystem: ${order.order_type}</p></div>
                             <div class="text-right"><span class="text-lg font-serif font-medium text-premium-dark">₹${order.price}</span></div>
                         </div>`;
                 });
-            } catch (error) { container.innerHTML = `<p class="text-center text-xs text-red-500 mt-10">Error loading orders</p>`; }
+            } catch (error) { container.innerHTML = `<p class="text-center text-xs text-red-500 mt-10">Sync error: ${error.message}</p>`; }
         }
 
-        // Fetch Global Feed (Cheapest & Local)
+        // Live Dynamic Database Feeder
         async function loadLiveProducts() {
             try {
                 const { data, error } = await supabaseClient.from('products').select('*');
@@ -523,8 +607,8 @@
                 cheapestContainer.innerHTML = ''; localContainer.innerHTML = '';
                 
                 if (data.length === 0) {
-                    cheapestContainer.innerHTML = '<p class="text-sm text-gray-400">Empty drop queue.</p>';
-                    localContainer.innerHTML = '<p class="text-sm text-gray-400">Empty boutique queue.</p>';
+                    cheapestContainer.innerHTML = '<p class="text-sm text-gray-400">Inventory channel empty.</p>';
+                    localContainer.innerHTML = '<p class="text-sm text-gray-400">Boutique channel empty.</p>';
                     return;
                 }
                 data.forEach(product => {
@@ -534,7 +618,7 @@
                     
                     const card = `
                         <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                            <div class="absolute top-3 left-3 z-10 ${product.is_local ? 'bg-gray-200 text-premium-dark' : 'bg-premium-dark text-white'} text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">${product.is_local ? 'Local Store' : 'Cheapest Drop'}</div>
+                            <div class="absolute top-3 left-3 z-10 ${product.is_local ? 'bg-gray-200 text-premium-dark' : 'bg-premium-dark text-white'} text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">${product.is_local ? 'Local Boutique' : 'Cheapest Drop'}</div>
                             <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${imgUrl}" class="w-full h-full object-cover"></div>
                             <h3 class="text-sm font-medium text-premium-dark line-clamp-1">${product.title}</h3>
                             <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
@@ -544,9 +628,10 @@
                         </div>`;
                     if(product.is_local) localContainer.innerHTML += card; else cheapestContainer.innerHTML += card;
                 });
-            } catch (error) { console.error(error); }
+            } catch (error) { console.error("Sync block:", error); }
         }
 
+        // Initialize Engine Sequence
         checkSession();
         loadLiveProducts();
     </script>
