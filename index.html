@@ -8,6 +8,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -18,6 +19,7 @@
             }
         }
     </script>
+    
     <style>
         body { background-color: #E8E8E8; color: #111111; }
         .hide-scroll::-webkit-scrollbar { display: none; }
@@ -56,7 +58,7 @@
 
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up">
-            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black">✕</button>
+            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
             
             <h2 id="auth-title" class="text-2xl font-serif text-premium-dark mb-6">Welcome Back.</h2>
             
@@ -93,6 +95,7 @@
         </div>
 
         <div class="space-y-20"> 
+            
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Cheapest Finds Online</h2>
@@ -133,19 +136,23 @@
         </div>
     </main>
 
+    <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-16">
+        <div class="max-w-[1400px] mx-auto text-[10px] text-premium-muted text-center uppercase tracking-widest">
+            &copy; 2026 Aesthetica. All rights reserved.
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
+        // Supabase Configuration
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
-
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- AUTHENTICATION LOGIC ---
+        // --- AUTHENTICATION STATE ---
         let isLoginMode = true;
-        let currentUser = null;
 
-        // UI toggles
         function toggleAuthModal() {
             const modal = document.getElementById('auth-modal');
             modal.classList.toggle('hidden');
@@ -160,15 +167,12 @@
             document.getElementById('auth-switch-btn').innerText = isLoginMode ? 'Create Account' : 'Login';
         }
 
-        // Check if user is already logged in on page load
         async function checkSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             updateAuthUI(session?.user);
         }
 
-        // Update Navbar based on login status
         function updateAuthUI(user) {
-            currentUser = user;
             const authBtn = document.getElementById('auth-btn');
             if (user) {
                 authBtn.innerText = "Logout";
@@ -181,7 +185,6 @@
             }
         }
 
-        // Handle Signup / Login
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
@@ -216,7 +219,6 @@
             }
         }
 
-        // Handle Logout
         async function handleLogout() {
             await supabaseClient.auth.signOut();
             updateAuthUI(null);
@@ -235,7 +237,14 @@
                 cheapestContainer.innerHTML = '';
                 localContainer.innerHTML = '';
 
+                // Fallback Image
                 const defaultImg = "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400";
+
+                if (data.length === 0) {
+                    cheapestContainer.innerHTML = '<p class="text-sm text-gray-400">No products found.</p>';
+                    localContainer.innerHTML = '<p class="text-sm text-gray-400">No local products found.</p>';
+                    return;
+                }
 
                 data.forEach(product => {
                     const imageUrl = product.image_url ? product.image_url : defaultImg;
@@ -265,10 +274,11 @@
                 });
             } catch (error) {
                 console.error("Data Load Error:", error.message);
+                document.getElementById('cheapest-products').innerHTML = '<p class="text-sm text-red-500">Failed to load drops.</p>';
             }
         }
 
-        // Initialize App
+        // Initialize App features on page load
         checkSession();
         loadLiveProducts();
     </script>
