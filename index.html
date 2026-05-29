@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -38,13 +40,11 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Ultra-smooth Premium Interactions */
         .hover-lift { transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         .img-zoom img { transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .img-zoom:hover img { transform: scale(1.05); }
         
-        /* Interactive Glowing Border for Tools */
         .glowing-border { position: relative; }
         .glowing-border::before {
             content: ""; position: absolute; inset: 0; border: 1px solid transparent;
@@ -122,7 +122,9 @@
             <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Rentals</a>
         </div>
 
-        <div class="space-y-20"> <section>
+        <div class="space-y-20"> 
+
+            <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Cheapest Finds Online</h2>
                 </div>
@@ -345,11 +347,13 @@
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Puraana code yahan fail ho raha tha. Naya code safe hai.
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function testConnection() {
             try {
-                const { data, error } = await supabase
+                // Yahan bhi 'supabaseClient' update kiya hai
+                const { data, error } = await supabaseClient
                     .from('products')
                     .select('*');
                 
