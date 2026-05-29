@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
     
-    <!-- PWA Setup (Install App Feature) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#111111">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
     
-    <!-- Fonts & Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -28,7 +26,7 @@
     </script>
     
     <style>
-        body { background-color: #E8E8E8; color: #111111; }
+        body { background-color: #E8E8E8; color: #111111; overflow-x: hidden; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .hover-lift { transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -39,68 +37,65 @@
         .glowing-border::before { content: ""; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color 0.5s ease; pointer-events: none; }
         .glowing-border:hover::before { border-color: rgba(17,17,17,0.3); }
         
-        /* Toast Notifications */
+        /* Modals & Toasts */
         .toast-enter { transform: translateY(100%); opacity: 0; }
         .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s ease-out; }
         .toast-leave-active { transform: translateY(100%); opacity: 0; transition: all 0.3s ease-in; }
         
-        /* AR Scanner & Cinematic Studio */
+        /* AR Scanner & Cinematic Studio CSS */
         @keyframes scan { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(300px); opacity: 1; } }
         .cinematic-35mm { filter: sepia(0.25) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg); }
-        .film-grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.3; mix-blend-mode: overlay; }
+        .film-grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.3; mix-blend-mode: overlay; z-index: 15; }
     </style>
 </head>
-<body class="antialiased pb-10">
+<body class="antialiased pb-10 relative">
 
-    <!-- 1. TOAST NOTIFICATIONS CONTAINER -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2"></div>
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- 2. PWA INSTALL BANNER -->
-    <div id="install-banner" class="hidden bg-premium-dark text-white px-6 py-2.5 flex justify-between items-center z-[60] relative border-b border-gray-800 shadow-md">
-        <span class="text-[9px] uppercase tracking-[0.2em] font-medium text-gray-300">Experience Native Mode</span>
-        <button id="install-btn" class="font-serif text-base italic text-white border-b border-white hover:text-gray-300 transition-colors tracking-wide">
+    <div id="install-banner" class="hidden fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[150] bg-[#111111]/90 backdrop-blur-xl border border-white/20 px-8 py-4 rounded-full shadow-2xl flex items-center gap-6 animate-fade-in-up">
+        <span class="text-white font-serif text-xl tracking-wide italic">Aesthetica.</span>
+        <div class="h-6 w-px bg-white/20"></div>
+        <button id="install-btn" class="text-[11px] uppercase tracking-[0.2em] font-bold text-white hover:text-gray-300 transition-colors">
             Install App ✨
         </button>
+        <button onclick="document.getElementById('install-banner').classList.add('hidden')" class="ml-2 text-gray-400 hover:text-white text-lg transition-colors">✕</button>
     </div>
 
-    <!-- 3. MAIN NAVIGATION BAR (Mobile Fixed) -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             <div class="flex-shrink-0 flex items-center space-x-4">
                 <span class="text-2xl font-serif font-semibold tracking-[0.15em] uppercase text-premium-dark">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
                     <span class="opacity-60">📍</span>
-                    <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer">Patna</span>
+                    <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer transition-colors">Patna</span>
                 </div>
             </div>
             
-            <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark">
+            <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
                 <input type="text" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
                 <button class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
             </div>
 
             <div class="flex items-center gap-4 md:gap-6">
-                <!-- Mobile Fixed: Added "flex" instead of "md:flex" -->
-                <div id="user-menu" class="hidden flex items-center space-x-4 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
+                <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">My Orders</button>
                     <button onclick="toggleProfileModal()" class="hover:text-premium-muted transition-colors border-b border-dashed border-premium-dark pb-0.5">AR Profile</button>
                 </div>
-                <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm">Login</button>
+                <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
                 <button class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
 
-    <!-- 4. SECURE CHECKOUT MODAL (RAZORPAY STYLE) -->
-    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex justify-center items-center">
+    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[4px] w-full max-w-sm relative animate-fade-in-up shadow-2xl">
-            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <div class="text-center mb-6">
                 <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 </div>
                 <h2 class="text-xl font-serif text-premium-dark">Secure Checkout</h2>
-                <p id="checkout-item-name" class="text-[11px] text-gray-500 mt-1 uppercase tracking-widest">Item Name</p>
+                <p id="checkout-item-name" class="text-[11px] text-gray-500 mt-1 uppercase tracking-widest line-clamp-1">Item Name</p>
                 <p id="checkout-item-price" class="text-2xl font-bold font-serif text-premium-dark mt-2">₹0</p>
             </div>
             <div class="space-y-3">
@@ -115,22 +110,21 @@
         </div>
     </div>
 
-    <!-- 5. MY ORDERS DASHBOARD MODAL -->
-    <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
-        <div class="bg-white p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col">
-            <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
+    <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
+            <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">Order History</h2>
             <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Track your aesthetic purchases & rentals</p>
-            <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-4 pr-2 mt-2"></div>
+            <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-4 pr-2 mt-2">
+                <p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>
+            </div>
         </div>
     </div>
 
-    <!-- 6. THE ULTIMATE AR PROFILE MODAL (Live Cam + Photo + Studio + Fit AI) -->
-    <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center">
-        <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6">
-            <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50">✕</button>
+    <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4">
+        <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto hide-scroll">
+            <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
             
-            <!-- Left Side: Camera & 35mm Photo Studio -->
             <div class="w-full md:w-1/2 relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[3/4] group film-grain">
                 <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
                 <img id="ar-uploaded-img" class="hidden absolute inset-0 w-full h-full object-cover z-10 transition-all duration-500" />
@@ -144,7 +138,6 @@
                     <span id="ar-mode-text" class="text-[8px] text-white uppercase tracking-widest font-bold drop-shadow-md">Live AR Map</span>
                 </div>
                 
-                <!-- 35mm Cinematic Controls -->
                 <div id="cinematic-controls" class="hidden absolute top-4 right-4 z-40 flex flex-col gap-2">
                     <button onclick="apply35mmFilter()" class="bg-black/60 backdrop-blur-md border border-yellow-500/50 text-yellow-400 text-[8px] uppercase tracking-widest px-2 py-1.5 rounded-sm hover:bg-yellow-500/20 transition shadow-lg">
                         Apply Kodak Portra 400
@@ -152,7 +145,7 @@
                 </div>
                 
                 <div class="absolute bottom-4 left-0 w-full text-center z-30 pointer-events-none">
-                    <p id="ar-status-text" class="text-[9px] text-green-400 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded">Calibrating Frame Engine...</p>
+                    <p id="ar-status-text" class="text-[9px] text-green-400 uppercase tracking-widest font-bold font-mono bg-black/50 inline-block px-2 py-1 rounded backdrop-blur-sm">Calibrating Frame Engine...</p>
                 </div>
 
                 <button onclick="document.getElementById('ar-photo-upload').click()" class="absolute bottom-4 right-4 z-40 bg-white text-black text-[8px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-sm hover:bg-gray-200 transition shadow-lg flex items-center gap-1">
@@ -161,7 +154,6 @@
                 <input type="file" id="ar-photo-upload" accept="image/*" class="hidden" onchange="handleARPhotoUpload(event)">
             </div>
 
-            <!-- Right Side: Power-Fit Sizing & Aesthetic Vibe Personalization -->
             <div class="w-full md:w-1/2 flex flex-col justify-center text-white">
                 <h2 class="text-2xl font-serif mb-2 text-white">AR Drape & Power-Fit</h2>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6">AI computes exact sizing based on frame density.</p>
@@ -185,11 +177,11 @@
                             <option value="all">All Collections</option>
                             <option value="old_money">Old Money (Linen & Kurtas)</option>
                             <option value="vintage_leather">Vintage Leather & Denim</option>
+                            <option value="traditional">Traditional (Kurtas)</option>
                             <option value="athletic">Athletic & Powerlifting</option>
                         </select>
                     </div>
                     
-                    <!-- Power-Fit Feedback Box -->
                     <div id="power-fit-box" class="mt-4 p-3 border border-gray-600 bg-gray-800/50 rounded-sm">
                         <span class="text-[8px] text-green-400 uppercase tracking-widest font-bold block mb-1">⚡ Power-Fit AI Result</span>
                         <p id="power-fit-result" class="text-[11px] text-white italic">Enter metrics to calculate perfect size.</p>
@@ -203,13 +195,12 @@
         </div>
     </div>
 
-    <!-- 7. FULL AUTHENTICATION MODAL (Restored UI Toggle) -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center">
-        <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up">
-            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl">✕</button>
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
+        <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up shadow-2xl">
+            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 id="auth-title" class="text-2xl font-serif text-premium-dark mb-6 text-center">Welcome Back.</h2>
             
-            <button onclick="handleOAuth('google')" class="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors rounded-sm mb-6">
+            <button onclick="handleOAuth('google')" class="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors rounded-sm mb-6 shadow-sm">
                 <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.16v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.16C1.43 8.55 1 10.22 1 12s.43 3.45 1.16 4.93l3.68-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.16 7.07l3.68 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                 Continue with Google
             </button>
@@ -225,7 +216,7 @@
                     <label class="text-[10px] uppercase tracking-widest font-medium text-gray-500 block mb-1">Security Keyphrase</label>
                     <input type="password" id="password-input" class="w-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-premium-dark rounded-sm" placeholder="••••••••">
                 </div>
-                <button id="submit-auth-btn" onclick="handleAuth()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-medium py-3 hover:bg-gray-800 transition rounded-sm">Login</button>
+                <button id="submit-auth-btn" onclick="handleAuth()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-medium py-3 hover:bg-gray-800 transition rounded-sm shadow-sm">Login</button>
             </div>
             
             <div class="mt-6 text-center text-[10px] uppercase tracking-widest font-medium text-gray-500">
@@ -235,33 +226,27 @@
         </div>
     </div>
 
-    <!-- 8. PROMOTION BANNERS (Horizontal Scroll) -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
-            <!-- Banner 1 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div class="flex items-center space-x-2 mb-1"><span class="text-[8px] bg-white text-black px-1.5 py-0.5 uppercase tracking-widest font-bold">The Vault</span><span class="text-[8px] uppercase tracking-widest text-red-400">Ends in 08h 45m</span></div>
                 <h3 class="text-lg font-serif mb-0.5">Vintage Leather Drop.</h3>
                 <p class="text-[10px] text-gray-400 font-light">3 exclusive local jackets available.</p>
             </div>
-            <!-- Banner 2 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-black/50"></div>
                 <div class="relative z-10"><span class="text-[8px] bg-white/20 backdrop-blur-md border border-white/30 text-white px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">Shoppable Feed</span><h3 class="text-lg font-serif mb-0.5">The Lookbook</h3><p class="text-[10px] text-gray-200">Scroll creator vibes.</p></div>
             </div>
-            <!-- Banner 3 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
                 <div class="relative z-10"><span class="text-[8px] border border-premium-dark text-premium-dark px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">For Boutiques</span><h3 class="text-lg font-serif mb-0.5">Sell locally via AI.</h3><p class="text-[10px] text-premium-muted font-light">Drop a photo. We digitize and list it.</p></div>
             </div>
         </div>
     </div>
 
-    <!-- 9. MAIN CONTENT FEEDS -->
     <main class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
-        <!-- Category Navbar -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
             <a href="#" class="text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</a>
             <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</a>
@@ -272,27 +257,31 @@
 
         <div class="space-y-20"> 
             
-            <!-- Live Feed 1: Cheapest Finds (Dynamic Title based on Vibe) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <p class="text-sm text-gray-400 italic">Syncing live database...</p>
+                    <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
+                        <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <p class="text-sm text-gray-400 italic">Connecting to Supabase Database...</p>
+                        <p class="text-[9px] text-gray-400 mt-2 uppercase tracking-widest">(Add products to your database to see them here)</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Live Feed 2: Local Boutiques -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <p class="text-sm text-gray-400 italic">Mapping nearest boutiques...</p>
+                    <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
+                        <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <p class="text-sm text-gray-400 italic">Mapping nearest boutiques...</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- 10. RESTORED: Creator's Garage (High Ticket P2P Section) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <div>
@@ -301,7 +290,6 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Garage Item 1: Bullet 350 -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
@@ -309,10 +297,9 @@
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Vintage Edition • Patna</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
                             <span class="text-base font-serif font-medium">₹2,500<span class="text-[8px] text-gray-400">/day</span></span>
-                            <button onclick="initiateCheckout('RE Bullet 350', 2500, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm">Book</button>
+                            <button onclick="initiateCheckout('RE Bullet 350', 2500, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
                         </div>
                     </div>
-                    <!-- Garage Item 2: Dominar 400 -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1621009897148-5c45ce126b48?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
@@ -320,19 +307,17 @@
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Touring Spec • Patna</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
                             <span class="text-base font-serif font-medium">₹1,800<span class="text-[8px] text-gray-400">/day</span></span>
-                            <button onclick="initiateCheckout('Bajaj Dominar 400', 1800, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm">Book</button>
+                            <button onclick="initiateCheckout('Bajaj Dominar 400', 1800, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Regular P2P Rentals Section -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Rental Item 1: Motorcycle -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
                         <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
@@ -345,15 +330,15 @@
                         </div>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
                             <span class="text-base font-serif font-medium">₹1,200</span>
-                            <button onclick="initiateCheckout('Continental GT 650', 1200, 'P2P Rental')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm">Rent</button>
+                            <button onclick="initiateCheckout('Continental GT 650', 1200, 'P2P Rental')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
                         </div>
                     </div>
 
-                    <!-- Rental Item 2: Shirt -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">Live Drop</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
+                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Old Money Aesthetic</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
                             <span class="text-base font-serif font-medium">₹999</span>
                             <button onclick="initiateCheckout('Coffee Brown Linen Shirt', 999, 'Affiliate Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors shadow-sm">Buy</button>
@@ -363,7 +348,6 @@
             </section>
         </div>
 
-        <!-- 11. CREATOR TOOLS (All 4 Cards) -->
         <section class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -373,41 +357,37 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-                <!-- Tool 1 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
+                        <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Digital Asset Pack</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">Aesthetic Blueprint</h3>
                         <p class="text-[11px] text-premium-muted leading-relaxed">Every checkout triggers access. Get presets, audio loops, and viral captions.</p>
                     </div>
                 </div>
-                <!-- Tool 2 (Triggers AR Profile) -->
                 <div onclick="toggleProfileModal()" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
-                        <div class="w-10 h-10 bg-gray-100 text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></div>
+                        <div class="w-10 h-10 bg-gray-100 text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md border border-gray-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Hyper-Personalized AI</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">AR Drape & Fit</h3>
                         <p class="text-[11px] text-premium-muted leading-relaxed">Activate live capture device or upload frame portraits for garment mapping.</p>
                     </div>
                 </div>
-                <!-- Tool 3 -->
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="flex -space-x-3 mb-4 group-hover:scale-110 transition-transform duration-500">
-                            <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-300 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11"></div>
-                            <div class="w-10 h-10 rounded-full border-2 border-white bg-premium-dark text-white flex items-center justify-center text-[10px] font-bold shadow-sm">+</div>
+                            <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-300 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/100?img=11" alt="User"></div>
+                            <div class="w-10 h-10 rounded-full border-2 border-white bg-premium-dark text-white flex items-center justify-center text-[10px] font-bold shadow-md">+</div>
                         </div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Collab Subsystem</span>
                         <h3 class="text-lg font-serif text-premium-dark mb-2">Co-Rent & Collab</h3>
                         <p class="text-[11px] text-premium-muted leading-relaxed">Planning complex studio captures? Share structural costs for high-tier props.</p>
                     </div>
                 </div>
-                <!-- Tool 4 -->
-                <div class="bg-premium-dark text-white p-6 rounded-[2px] shadow-lg hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
+                <div class="bg-premium-dark text-white p-6 rounded-[2px] shadow-xl hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
-                        <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-1 block">Social Conversion Node</span>
                         <h3 class="text-lg font-serif mb-2">Aesthetic Bounties</h3>
                         <p class="text-[11px] text-gray-300 leading-relaxed">Monetize affiliate channels directly. Secure incoming commissions to vault.</p>
@@ -417,22 +397,32 @@
         </section>
     </main>
 
-    <!-- 12. PREMIUM FOOTER -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div><h3 class="text-xs uppercase tracking-widest font-bold mb-4">Aesthetica</h3><p class="text-[11px] text-premium-muted leading-relaxed">The premier decentralized architecture for creator-led shopping pipelines.</p></div>
-            <div><h3 class="text-xs uppercase tracking-widest font-bold mb-4">Legal Framework</h3><ul class="text-[11px] text-premium-muted space-y-2"><li><a href="#" class="hover:text-premium-dark transition">Privacy Architecture</a></li><li><a href="#" class="hover:text-premium-dark transition">Terms of Service</a></li></ul></div>
-            <div><h3 class="text-xs uppercase tracking-widest font-bold mb-4">Ecosystem Hub</h3><p class="text-[11px] text-premium-muted hover:text-premium-dark transition cursor-pointer">aestheticaworld@gmail.com</p></div>
+            <div>
+                <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Aesthetica</h3>
+                <p class="text-[11px] text-premium-muted leading-relaxed">The premier decentralized architecture for creator-led shopping pipelines.</p>
+            </div>
+            <div>
+                <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Legal Framework</h3>
+                <ul class="text-[11px] text-premium-muted space-y-2">
+                    <li><a href="#" class="hover:text-premium-dark transition">Privacy Architecture</a></li>
+                    <li><a href="#" class="hover:text-premium-dark transition">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Ecosystem Hub</h3>
+                <p class="text-[11px] text-premium-muted hover:text-premium-dark transition cursor-pointer">aestheticaworld@gmail.com</p>
+            </div>
         </div>
         <div class="max-w-[1400px] mx-auto mt-12 pt-8 border-t border-gray-100 text-[10px] text-premium-muted text-center uppercase tracking-widest">
             &copy; 2026 Aesthetica Engine. Built for the culture.
         </div>
     </footer>
 
-    <!-- 13. FULL SUPABASE & LOGIC SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase DB Connection
+        // Supabase DB Connection (Ensure your RLS policies allow inserts!)
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -440,11 +430,9 @@
         let currentUser = null;
         let arStream = null;
         let currentOrderPayload = {};
-        
-        // RESTORED: Auth toggle state
         let isLoginMode = true; 
 
-        // PWA Install Prompt
+        // PWA Install Prompt Logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
@@ -463,14 +451,14 @@
         function showToast(message, type = "success") {
             const c = document.getElementById('toast-container');
             const t = document.createElement('div');
-            t.className = `bg-premium-dark text-white px-6 py-3 rounded-sm shadow-xl text-[11px] uppercase tracking-widest font-medium toast-enter mt-2 flex items-center gap-3`;
-            t.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>${message}</span>`;
+            t.className = `bg-premium-dark text-white px-6 py-3 rounded-sm shadow-2xl text-[11px] uppercase tracking-widest font-medium toast-enter flex items-center gap-3`;
+            t.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>${message}</span>`;
             c.appendChild(t);
             setTimeout(() => t.classList.add('toast-enter-active'), 10);
             setTimeout(() => { t.classList.remove('toast-enter-active'); t.classList.add('toast-leave-active'); setTimeout(() => t.remove(), 300); }, 3500);
         }
 
-        // Modals Toggle (RESTORED Auth Toggle Mode)
+        // Modals Toggle
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
         
         function toggleAuthMode() {
@@ -496,32 +484,37 @@
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
+        
         async function processPayment() {
             const btn = document.getElementById('pay-btn');
             const originalText = btn.innerText;
             btn.innerText = "Processing via Razorpay...";
+            
             setTimeout(async () => {
                 const { error } = await supabaseClient.from('orders').insert({
                     user_id: currentUser.id, product_name: currentOrderPayload.name, price: currentOrderPayload.price, order_type: currentOrderPayload.type
                 });
-                closeCheckout(); btn.innerText = originalText;
+                closeCheckout(); 
+                btn.innerText = originalText;
+                
                 if (!error) showToast(`Payment Successful! ${currentOrderPayload.name} ordered.`);
-                else showToast("Error saving order: " + error.message, "error");
+                else showToast("Database RLS Error: Check SQL settings", "error");
             }, 1500);
         }
 
-        // Fetch Orders (Real-time DB + FIX: Tailwind CSS Bug for dynamic badges)
+        // Fetch Orders (Real-time DB)
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
-            container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6">Loading...</p>';
-            const { data } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+            container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>';
+            
+            const { data, error } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+            
             if(data) {
                 container.innerHTML = '';
-                if(data.length===0) container.innerHTML = '<p class="text-center text-sm text-gray-500">No orders yet.</p>';
+                if(data.length===0) container.innerHTML = '<p class="text-center text-sm text-gray-500 mt-6">No orders yet.</p>';
                 data.forEach(o => {
                     const date = new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
                     
-                    // FIXED: Tailwind Purge Bug for dynamic strings
                     let badge = '';
                     if(o.order_type === 'P2P Rental' || o.order_type === 'Creator Garage') {
                         badge = '<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Rented</span>';
@@ -531,7 +524,7 @@
                     
                     container.innerHTML += `<div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center mb-3 hover:bg-gray-50 transition-colors">
                         <div><div class="flex items-center gap-3 mb-1"><h4 class="text-sm font-medium text-premium-dark">${o.product_name}</h4>${badge}</div><p class="text-[10px] text-gray-500 uppercase">${date} • ${o.order_type}</p></div>
-                        <span class="text-lg font-serif font-medium">₹${o.price}</span></div>`;
+                        <span class="text-lg font-serif font-medium text-premium-dark">₹${o.price}</span></div>`;
                 });
             }
         }
@@ -540,7 +533,9 @@
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
-            const { data } = await supabaseClient.from('products').select('*');
+            
+            const { data, error } = await supabaseClient.from('products').select('*');
+            
             if(data && data.length > 0) {
                 cheapContainer.innerHTML = ''; localContainer.innerHTML = '';
                 data.forEach(p => {
@@ -554,18 +549,18 @@
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${p.image_url || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400'}" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">${p.title}</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
-                            <span class="text-base font-serif font-medium">₹${p.price}</span>
-                            <button onclick="initiateCheckout('${cleanTitle}', ${p.price}, '${p.is_local ? 'Local Purchase' : 'Affiliate Buy'}')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition">Buy</button>
+                            <span class="text-base font-serif font-medium text-premium-dark">₹${p.price}</span>
+                            <button onclick="initiateCheckout('${cleanTitle}', ${p.price}, '${p.is_local ? 'Local Purchase' : 'Affiliate Buy'}')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
                         </div></div>`;
                     if(p.is_local) localContainer.innerHTML += card; else cheapContainer.innerHTML += card;
                 });
             } else { 
-                cheapContainer.innerHTML = '<p class="text-sm text-gray-400">Inventory Empty.</p>';
-                localContainer.innerHTML = '<p class="text-sm text-gray-400">Inventory Empty.</p>'; 
+                cheapContainer.innerHTML = '<div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm"><p class="text-sm text-gray-400 italic">Inventory list is empty in database.</p></div>';
+                localContainer.innerHTML = '<div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm"><p class="text-sm text-gray-400 italic">No local boutiques mapped yet.</p></div>'; 
             }
         }
 
-        // AR Profile (Camera + Photo + 35mm Studio + Power Fit)
+        // AR Profile Engine (Camera + Photo + 35mm Studio + Power Fit)
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
             const modal = document.getElementById('profile-modal');
@@ -575,28 +570,39 @@
                 document.getElementById('cinematic-controls').classList.add('hidden');
                 document.getElementById('ar-video-feed').classList.remove('hidden');
                 document.getElementById('scan-line').classList.remove('hidden');
-                calculatePowerFit(); // Run fit check
+                
+                calculatePowerFit(); // Run fit check calculation
+                
                 try {
                     arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
                     document.getElementById('ar-video-feed').srcObject = arStream;
-                } catch (err) { document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo"; }
-            } else { if(arStream) arStream.getTracks().forEach(t => t.stop()); }
+                } catch (err) { 
+                    document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo."; 
+                    document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-red-500');
+                }
+            } else { 
+                if(arStream) arStream.getTracks().forEach(t => t.stop()); 
+            }
         }
 
         function handleARPhotoUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 if(arStream) arStream.getTracks().forEach(t => t.stop());
+                
                 document.getElementById('ar-video-feed').classList.add('hidden');
                 const img = document.getElementById('ar-uploaded-img');
-                img.classList.remove('hidden'); img.classList.remove('cinematic-35mm');
+                img.classList.remove('hidden'); 
+                img.classList.remove('cinematic-35mm'); // Reset filter
+                
+                document.getElementById('ar-status-text').innerText = "Analyzing Dimensions...";
                 
                 const r = new FileReader();
                 r.onload = function(e) {
                     img.src = e.target.result;
                     setTimeout(() => {
                         document.getElementById('scan-line').classList.add('hidden');
-                        document.getElementById('ar-status-text').innerText = "Dimensions Extracted.";
+                        document.getElementById('ar-status-text').innerText = "Dimensions Extracted. Map Ready.";
                         document.getElementById('cinematic-controls').classList.remove('hidden'); // Show 35mm button
                     }, 1500);
                 }
@@ -613,17 +619,18 @@
             const phys = document.getElementById('profile-body').value;
             const box = document.getElementById('power-fit-result');
             
-            // Personalized touch for heavy lifters
+            // Personalized touch for heavy lifters vs standard
             if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape.";
             else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic.";
             else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
-        // Auth, Session & Data Personalization (RESTORED Login/Signup Handling)
+        // Auth, Session & Data Personalization (Fully Restored)
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
             if(!email || !password) return showToast("Enter credentials", "error");
+            
             document.getElementById('submit-auth-btn').innerText = "Syncing...";
             
             try {
@@ -642,7 +649,9 @@
             }
         }
         
-        async function handleOAuth(p) { await supabaseClient.auth.signInWithOAuth({ provider: p, options: { redirectTo: window.location.origin } }); }
+        async function handleOAuth(p) { 
+            await supabaseClient.auth.signInWithOAuth({ provider: p, options: { redirectTo: window.location.origin } }); 
+        }
         
         async function checkSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
@@ -651,17 +660,28 @@
                 document.getElementById('auth-btn').innerText = "Logout";
                 document.getElementById('auth-btn').onclick = () => { supabaseClient.auth.signOut(); location.reload(); };
                 
-                // FIXED: Mobile UI Bug for Auth Menu
+                // Show user menus
                 document.getElementById('user-menu').classList.remove('hidden');
+                document.getElementById('user-menu').classList.add('flex');
                 
+                // Load User Data from Profile Table
                 const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
                 if (data) {
                     if(data.height) document.getElementById('profile-height').value = data.height;
                     if(data.body_type) document.getElementById('profile-body').value = data.body_type;
                     if(data.style_preference) {
                         document.getElementById('profile-style').value = data.style_preference;
-                        const t = { 'old_money':'Curated: Old Money Finds', 'vintage_leather':'Curated: Vintage Edgy', 'traditional':'Curated: Premium Traditional', 'athletic':'Curated: Gym Gear' };
-                        if(t[data.style_preference]) document.getElementById('dynamic-feed-title').innerText = t[data.style_preference];
+                        
+                        // Change Feed Title dynamically based on preference
+                        const titles = { 
+                            'old_money': 'Curated: Old Money Finds', 
+                            'vintage_leather': 'Curated: Vintage Edgy', 
+                            'traditional': 'Curated: Premium Traditional', 
+                            'athletic': 'Curated: Gym & Lifting Gear' 
+                        };
+                        if(titles[data.style_preference]) {
+                            document.getElementById('dynamic-feed-title').innerText = titles[data.style_preference];
+                        }
                     }
                 }
             }
@@ -671,13 +691,22 @@
             const h = document.getElementById('profile-height').value;
             const b = document.getElementById('profile-body').value;
             const s = document.getElementById('profile-style').value;
+            
+            document.getElementById('save-profile-btn').innerText = "Saving Matrix...";
+            
             const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, height: h, body_type: b, style_preference: s });
-            if(error) showToast(error.message, "error");
-            else { showToast("Matrix Locked!"); setTimeout(() => location.reload(), 1000); }
+            if(error) {
+                showToast("DB Error: " + error.message, "error");
+                document.getElementById('save-profile-btn').innerText = "Lock Calibration";
+            } else { 
+                showToast("Matrix Locked & Feed Updated!"); 
+                setTimeout(() => location.reload(), 1000); 
+            }
         }
 
         // Boot Application
-        checkSession(); loadLiveProducts();
+        checkSession(); 
+        loadLiveProducts();
     </script>
 </body>
 </html>
