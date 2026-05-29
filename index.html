@@ -122,53 +122,12 @@
             <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Rentals</a>
         </div>
 
-        <div class="space-y-20"> 
-
-            <section>
+        <div class="space-y-20"> <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Cheapest Finds Online</h2>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">Brown Linen Shirt</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Aggregated Online</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹1,199</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium border border-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors duration-300">Buy</button>
-                        </div>
-                    </div>
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover mix-blend-multiply"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">Vintage Casio</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Online Aggregated</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹1,495</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium border border-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors duration-300">Buy</button>
-                        </div>
-                    </div>
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover mix-blend-multiply"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">White Sneakers</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Puma Global</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹2,100</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium border border-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors duration-300">Buy</button>
-                        </div>
-                    </div>
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">Vintage Leather Jacket</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Zara Global</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹4,500</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium border border-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors duration-300">Buy</button>
-                        </div>
-                    </div>
+                <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <p class="text-sm text-gray-400 italic">Loading live drops from Supabase...</p>
                 </div>
             </section>
 
@@ -176,27 +135,8 @@
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Store</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1621325178657-3f9bf482d8c9?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">Vine Silk Kurta</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Raj Tailors, Boring Rd</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹1,500</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium bg-gray-100 text-premium-dark px-3 py-1.5 hover:bg-gray-200 transition-colors duration-300">Pickup</button>
-                        </div>
-                    </div>
-                    <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
-                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Store</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">Custom Biker Jacket</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">Kankarbagh Garments</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
-                            <span class="text-base font-serif font-medium">₹3,200</span>
-                            <button class="text-[9px] uppercase tracking-widest font-medium bg-gray-100 text-premium-dark px-3 py-1.5 hover:bg-gray-200 transition-colors duration-300">Pickup</button>
-                        </div>
-                    </div>
+                <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <p class="text-sm text-gray-400 italic">Loading local stores from Supabase...</p>
                 </div>
             </section>
 
@@ -251,7 +191,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                
                 <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform duration-500">
@@ -309,10 +248,8 @@
                         Launch Storefront &rarr;
                     </div>
                 </div>
-
             </div>
         </section>
-
     </main>
 
     <footer class="bg-white border-t border-gray-200 py-12 px-6">
@@ -321,7 +258,6 @@
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Aesthetica</h3>
                 <p class="text-[11px] text-premium-muted leading-relaxed">The ultimate ecosystem for creators to shop, rent, and monetize their aesthetic.</p>
             </div>
-            
             <div>
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Legal & Support</h3>
                 <ul class="text-[11px] text-premium-muted space-y-2">
@@ -330,7 +266,6 @@
                     <li><a href="mailto:aestheticaworld@gmail.com" class="hover:text-premium-dark transition">Contact Us: aestheticaworld@gmail.com</a></li>
                 </ul>
             </div>
-
             <div>
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4">Connect</h3>
                 <p class="text-[11px] text-premium-muted">Questions? Reach out to us anytime at aestheticaworld@gmail.com</p>
@@ -347,26 +282,63 @@
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
 
-        // Puraana code yahan fail ho raha tha. Naya code safe hai.
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function testConnection() {
+        async function loadLiveProducts() {
             try {
-                // Yahan bhi 'supabaseClient' update kiya hai
-                const { data, error } = await supabaseClient
-                    .from('products')
-                    .select('*');
-                
+                // Database se products fetch karo
+                const { data, error } = await supabaseClient.from('products').select('*');
                 if (error) throw error;
                 
-                console.log("🔥 Supabase Connected Successfully! 🔥");
-                console.log("Aapke Products Database se aa gaye:", data);
+                const cheapestContainer = document.getElementById('cheapest-products');
+                const localContainer = document.getElementById('local-products');
+                
+                cheapestContainer.innerHTML = '';
+                localContainer.innerHTML = '';
+
+                // Default image agar link tuta ho
+                const defaultImgs = [
+                    "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400",
+                    "https://images.unsplash.com/photo-1621325178657-3f9bf482d8c9?auto=format&fit=crop&q=80&w=400"
+                ];
+
+                data.forEach((product, index) => {
+                    // Agar API se image_url nahi aaya, toh array se default laga lo
+                    const imageUrl = product.image_url ? product.image_url : defaultImgs[index % 2];
+                    
+                    const cardHTML = `
+                        <div class="bg-premium-card p-4 rounded-[2px] hover-lift relative img-zoom group flex flex-col shadow-sm border border-transparent hover:border-gray-100 transition-all">
+                            <div class="absolute top-3 left-3 z-10 ${product.is_local ? 'bg-gray-200 text-premium-dark' : 'bg-premium-dark text-white'} text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">
+                                ${product.is_local ? 'Local Store' : 'Cheapest Drop'}
+                            </div>
+                            <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 rounded-[2px]">
+                                <img src="${imageUrl}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="text-sm font-medium text-premium-dark line-clamp-1 group-hover:text-gray-600 transition-colors">${product.title}</h3>
+                            <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-3">${product.category}</p>
+                            <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center">
+                                <span class="text-base font-serif font-medium">₹${product.price}</span>
+                                <a href="${product.affiliate_link || '#'}" target="_blank" class="text-[9px] uppercase tracking-widest font-medium ${product.is_local ? 'bg-gray-100 text-premium-dark hover:bg-gray-200' : 'border border-premium-dark hover:bg-premium-dark hover:text-white'} px-3 py-1.5 transition-colors duration-300">
+                                    ${product.is_local ? 'Pickup' : 'Buy'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+
+                    if(product.is_local) {
+                        localContainer.innerHTML += cardHTML;
+                    } else {
+                        cheapestContainer.innerHTML += cardHTML;
+                    }
+                });
+
             } catch (error) {
-                console.error("Connection Error:", error.message);
+                console.error("Data Load Error:", error.message);
+                document.getElementById('cheapest-products').innerHTML = '<p class="text-sm text-red-500">Failed to load drops.</p>';
             }
         }
 
-        testConnection();
+        loadLiveProducts();
     </script>
 </body>
 </html>
