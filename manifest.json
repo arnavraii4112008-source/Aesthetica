@@ -1,23 +1,31 @@
 {
   "name": "Aesthetica Super-App",
   "short_name": "Aesthetica",
-  "description": "Premium Creator Ecosystem",
+  "description": "The Curated Creator Ecosystem for Premium Finds & Rentals.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#E8E8E8",
   "theme_color": "#111111",
   "icons": [
     {
-      "src": "logo.svg",
-      "sizes": "192x192",
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1280&h=720&q=80",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide"
     },
     {
-      "src": "logo.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=720&h=1280&q=80",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
     }
   ]
 }
