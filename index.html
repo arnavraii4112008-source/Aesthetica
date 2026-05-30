@@ -61,7 +61,7 @@
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             
-            <!-- INTERNAL TEXT LOGO & LOCATION (Unchanged & Clean) -->
+            <!-- INTERNAL TEXT LOGO & LOCATION -->
             <div class="flex-shrink-0 flex items-center space-x-4">
                 <span class="text-2xl font-serif font-semibold tracking-[0.15em] text-premium-dark cursor-pointer hover:opacity-80 transition-opacity">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
@@ -79,7 +79,7 @@
             <!-- Profile Menus & Auth -->
             <div class="flex items-center gap-4 md:gap-6">
                 
-                <!-- PWA Install App Button (Visible in Navbar) -->
+                <!-- PWA Install App Button -->
                 <button id="install-btn" class="font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
@@ -91,7 +91,7 @@
                 </div>
                 
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
-                <button class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
+                <button onclick="showToast('Cart functionality syncing with server...')" class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
@@ -176,7 +176,7 @@
                 <div class="space-y-3">
                     <div>
                         <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1">Height (e.g., 5'7")</label>
-                        <input type="text" id="profile-height" oninput="calculatePowerFit()" class="w-full bg-transparent border-b border-gray-600 px-2 py-2 text-sm focus:outline-none focus:border-white text-white">
+                        <input type="text" id="profile-height" placeholder="Enter height" oninput="calculatePowerFit()" class="w-full bg-transparent border-b border-gray-600 px-2 py-2 text-sm focus:outline-none focus:border-white text-white">
                     </div>
                     <div>
                         <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1">Physique Profile</label>
@@ -280,29 +280,60 @@
 
         <div class="space-y-20"> 
             
-            <!-- Live Feed 1: Cheapest Finds -->
+            <!-- Live Feed 1: Cheapest Finds (WITH FALLBACK DATA SO IT NEVER LOOKS EMPTY) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
-                        <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        <p class="text-sm text-gray-400 italic">Connecting to Supabase Database...</p>
-                        <p class="text-[9px] text-gray-400 mt-2 uppercase tracking-widest">(Add products to your database to see them here)</p>
+                    <!-- Default Dummy Card 1 -->
+                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                            <span class="text-base font-serif font-medium text-premium-dark">₹999</span>
+                            <button onclick="initiateCheckout('Coffee Brown Linen Shirt', 999, 'Affiliate Buy')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                        </div>
+                    </div>
+                    <!-- Default Dummy Card 2 -->
+                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Vintage Leather Jacket</h3>
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                            <span class="text-base font-serif font-medium text-premium-dark">₹3,499</span>
+                            <button onclick="initiateCheckout('Vintage Leather Jacket', 3499, 'Affiliate Buy')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Live Feed 2: Local Boutiques -->
+            <!-- Live Feed 2: Local Boutiques (WITH FALLBACK DATA) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
-                        <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <p class="text-sm text-gray-400 italic">Mapping nearest boutiques...</p>
+                    <!-- Default Dummy Card 3 -->
+                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1594938298596-70f5846ce271?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Premium Vine Kurta</h3>
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                            <span class="text-base font-serif font-medium text-premium-dark">₹1,299</span>
+                            <button onclick="initiateCheckout('Premium Vine Kurta', 1299, 'Local Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                        </div>
+                    </div>
+                    <!-- Default Dummy Card 4 -->
+                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Old Money Minimal Watch</h3>
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                            <span class="text-base font-serif font-medium text-premium-dark">₹2,100</span>
+                            <button onclick="initiateCheckout('Old Money Watch', 2100, 'Local Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -364,15 +395,15 @@
                         </div>
                     </div>
 
-                    <!-- Rental Item 2: Shirt -->
+                    <!-- Rental Item 2: Gym Power Belt -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">Live Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
-                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
-                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Old Money Aesthetic</p>
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">P2P Rental</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Leather Powerlifting Belt</h3>
+                        <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">140kg Tested • Heavy Duty</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
-                            <span class="text-base font-serif font-medium">₹999</span>
-                            <button onclick="initiateCheckout('Coffee Brown Linen Shirt', 999, 'Affiliate Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark px-3 py-1.5 hover:bg-premium-dark hover:text-white transition-colors shadow-sm">Buy</button>
+                            <span class="text-base font-serif font-medium">₹400<span class="text-[8px] text-gray-400">/day</span></span>
+                            <button onclick="initiateCheckout('Powerlifting Belt', 400, 'P2P Rental')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
                         </div>
                     </div>
                 </div>
@@ -469,6 +500,17 @@
         let arStream = null;
         let currentOrderPayload = {};
         let isLoginMode = true; 
+
+        // ==========================================
+        // PWA Service Worker Registration
+        // ==========================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker Registered Successfully!'))
+                    .catch(err => console.log('SW Registration Failed:', err));
+            });
+        }
 
         // ==========================================
         // PWA Install Prompt Logic (Always visible in Navbar)
@@ -589,12 +631,16 @@
         }
 
         // ==========================================
-        // Live Products Loading
+        // Live Products Loading (With HTML Fallbacks)
         // ==========================================
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
             
+            // Backup the default HTML cards in case DB is empty, so it never looks blank!
+            const defaultCheapHTML = cheapContainer.innerHTML;
+            const defaultLocalHTML = localContainer.innerHTML;
+
             const { data, error } = await supabaseClient.from('products').select('*');
             
             if(data && data.length > 0) {
@@ -615,9 +661,9 @@
                         </div></div>`;
                     if(p.is_local) localContainer.innerHTML += card; else cheapContainer.innerHTML += card;
                 });
-            } else { 
-                cheapContainer.innerHTML = '<div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm"><p class="text-sm text-gray-400 italic">Inventory list is empty in database.</p></div>';
-                localContainer.innerHTML = '<div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm"><p class="text-sm text-gray-400 italic">No local boutiques mapped yet.</p></div>'; 
+            } else {
+                // Keep the default hardcoded HTML cards showing instead of a blank screen!
+                console.log("Supabase empty. Loading premium fallback cards.");
             }
         }
 
