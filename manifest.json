@@ -1,17 +1,24 @@
 {
   "name": "Aesthetica Super-App",
   "short_name": "Aesthetica",
-  "description": "The Curated Creator Ecosystem for Premium Finds & Rentals.",
-  "start_url": "/index.html",
+  "description": "The premier decentralized architecture for creator-led shopping pipelines.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#E8E8E8",
   "theme_color": "#111111",
+  "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "144x144",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "icon.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
       "src": "icon.svg",
@@ -20,18 +27,20 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
+  "shortcuts": [
     {
-      "src": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1280&h=720&q=80",
-      "sizes": "1280x720",
-      "type": "image/jpeg",
-      "form_factor": "wide"
+      "name": "My Vault",
+      "short_name": "Vault",
+      "description": "View your saved items",
+      "url": "/#vault",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
     },
     {
-      "src": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=720&h=1280&q=80",
-      "sizes": "720x1280",
-      "type": "image/jpeg",
-      "form_factor": "narrow"
+      "name": "Open Cart",
+      "short_name": "Cart",
+      "description": "View your shopping cart",
+      "url": "/#cart",
+      "icons": [{ "src": "icon.svg", "sizes": "192x192" }]
     }
   ]
 }
