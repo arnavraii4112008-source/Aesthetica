@@ -28,7 +28,7 @@
     </script>
     
     <style>
-        body { background-color: #E8E8E8; color: #111111; overflow-x: hidden; }
+        body { background-color: #E8E8E8; color: #111111; overflow-x: hidden; scroll-behavior: smooth; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .hover-lift { transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -52,6 +52,9 @@
         @keyframes scan { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(300px); opacity: 1; } }
         .cinematic-35mm { filter: sepia(0.25) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg); }
         .film-grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.3; mix-blend-mode: overlay; z-index: 15; }
+        
+        /* Wishlist Heart Toggle */
+        .wishlist-active { fill: #ef4444; color: #ef4444; stroke: #ef4444; }
     </style>
 </head>
 <body class="antialiased pb-10 relative">
@@ -64,7 +67,6 @@
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             
             <div class="flex-shrink-0 flex items-center space-x-4">
-                <!-- INLINE PREMIUM LOGO -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" class="h-10 md:h-12 hover:opacity-80 transition-opacity cursor-pointer" onclick="window.scrollTo(0,0)">
                   <defs>
                     <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap'); .brand-title { font-family: 'Cormorant Garamond', serif; }</style>
@@ -77,13 +79,13 @@
                   <text x="400" y="270" class="brand-title" font-size="160" font-weight="500" fill="#111111" text-anchor="middle" letter-spacing="-1">Aesthetica</text>
                 </svg>
                 
-                <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
-                    <span class="opacity-60">📍</span>
-                    <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer transition-colors">Patna</span>
+                <div onclick="updateCity()" class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4 group cursor-pointer">
+                    <span class="opacity-60 group-hover:opacity-100 transition-opacity">📍</span>
+                    <span id="user-location" class="border-b border-premium-dark pb-0.5 group-hover:text-premium-muted transition-colors">Patna</span>
                 </div>
             </div>
             
-            <!-- Global Search & AI Lens (NOW FUNCTIONAL TEXT SEARCH) -->
+            <!-- Global Search & AI Lens -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
                 <input type="text" id="global-search-input" oninput="searchLiveFeed(this.value)" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
                 <button onclick="document.getElementById('ai-photo-search').click()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
@@ -96,10 +98,12 @@
                     Install App ✨
                 </button>
 
-                <!-- User Menu -->
+                <!-- NEW: Personalized User Menu -->
                 <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
-                    <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">My Orders</button>
+                    <button onclick="toggleVaultModal()" class="hover:text-red-500 transition-colors border-b border-transparent hover:border-red-500 pb-0.5">My Vault ♥</button>
+                    <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">Orders</button>
                     <button onclick="toggleProfileModal()" class="hover:text-premium-muted transition-colors border-b border-dashed border-premium-dark pb-0.5">AR Profile</button>
+                    <button onclick="handleLogout()" class="text-red-500 hover:text-red-700 transition-colors">Logout</button>
                 </div>
                 
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
@@ -110,7 +114,7 @@
         </div>
     </nav>
 
-    <!-- 2.5 CART DRAWER -->
+    <!-- 2.5 CART DRAWER (SMART STACKING ADDED) -->
     <div id="cart-drawer-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] hidden opacity-0 transition-opacity duration-300">
         <div id="cart-drawer" class="absolute top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl flex flex-col drawer-slide">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
@@ -162,6 +166,18 @@
             <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Track your aesthetic purchases & rentals</p>
             <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-4 pr-2 mt-2">
                 <p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4.5. MY VAULT (WISHLIST) MODAL -->
+    <div id="vault-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
+            <button onclick="toggleVaultModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
+            <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">My Vault ♥</h2>
+            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Your curated wishlisted items</p>
+            <div id="vault-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-3 pr-2 mt-2">
+                <p class="text-center text-xs text-gray-400 mt-6 uppercase tracking-widest">Vault is empty.</p>
             </div>
         </div>
     </div>
@@ -276,45 +292,51 @@
     <!-- 7. PROMOTION BANNERS -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
-            <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
+            <div onclick="scrollToSection('feed-start')" class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div class="flex items-center space-x-2 mb-1"><span class="text-[8px] bg-white text-black px-1.5 py-0.5 uppercase tracking-widest font-bold">The Vault</span><span class="text-[8px] uppercase tracking-widest text-red-400">Ends in 08h 45m</span></div>
                 <h3 class="text-lg font-serif mb-0.5">Vintage Leather Drop.</h3>
                 <p class="text-[10px] text-gray-400 font-light">3 exclusive local jackets available.</p>
             </div>
-            <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
-                <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div onclick="scrollToSection('feed-start')" class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
+                <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-black/50"></div>
                 <div class="relative z-10"><span class="text-[8px] bg-white/20 backdrop-blur-md border border-white/30 text-white px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">Shoppable Feed</span><h3 class="text-lg font-serif mb-0.5">The Lookbook</h3><p class="text-[10px] text-gray-200">Scroll creator vibes.</p></div>
             </div>
-            <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
+            <div onclick="scrollToSection('creator-tools')" class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
                 <div class="relative z-10"><span class="text-[8px] border border-premium-dark text-premium-dark px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">For Boutiques</span><h3 class="text-lg font-serif mb-0.5">Sell locally via AI.</h3><p class="text-[10px] text-premium-muted font-light">Drop a photo. We digitize and list it.</p></div>
             </div>
         </div>
     </div>
 
     <!-- 8. MAIN CONTENT FEEDS -->
-    <main class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
+    <main id="feed-start" class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
-        <!-- Category Filters -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
             <button onclick="filterFeed('all')" class="category-btn text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</button>
             <button onclick="filterFeed('old-money')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</button>
-            <button onclick="filterFeed('watches')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Watches</button>
+            <button onclick="filterFeed('watches')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Watches & Extras</button>
             <button onclick="filterFeed('rentals')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Rentals & Bikes</button>
         </div>
 
-        <div class="space-y-20"> 
+        <!-- NEW: NO RESULTS SEARCH STATE -->
+        <div id="empty-search-state" class="hidden text-center py-20 text-gray-400 text-xs uppercase tracking-widest font-medium border border-dashed border-gray-300 rounded-[2px]">
+            No aesthetic matches found.
+        </div>
+
+        <div class="space-y-20" id="main-feed-container"> 
             
-            <!-- Live Feed 1: Cheapest Finds -->
             <section class="feed-section" data-category="old-money">
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Coffee Brown Linen Shirt">
+                        <button onclick="toggleWishlist(this, 'Coffee Brown Linen Shirt')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Cheapest Drop</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹999</span>
@@ -324,9 +346,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Vintage Leather Jacket">
+                        <button onclick="toggleWishlist(this, 'Vintage Leather Jacket')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Cheapest Drop</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Vintage Leather Jacket</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹3,499</span>
@@ -339,15 +364,17 @@
                 </div>
             </section>
 
-            <!-- Live Feed 2: Local Boutiques -->
             <section class="feed-section" data-category="watches">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1594938298596-70f5846ce271?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Premium Vine Kurta">
+                        <button onclick="toggleWishlist(this, 'Premium Vine Kurta')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Local Boutique</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1594938298596-70f5846ce271?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Premium Vine Kurta</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹1,299</span>
@@ -357,14 +384,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Old Money Minimal Watch">
+                        <button onclick="toggleWishlist(this, 'Old Money Minimal Watch')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Local Boutique</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Old Money Minimal Watch</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹2,100</span>
                             <div class="flex gap-2">
-                                <button onclick="addToCart('Old Money Watch', 2100)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="addToCart('Old Money Minimal Watch', 2100)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
                                 <button onclick="initiateCheckout('Old Money Watch', 2100, 'Local Purchase')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
                             </div>
                         </div>
@@ -372,7 +402,6 @@
                 </div>
             </section>
 
-            <!-- 9. Creator's Garage (Rentals) -->
             <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <div>
@@ -381,9 +410,12 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Royal Enfield Bullet 350">
+                        <button onclick="toggleWishlist(this, 'Royal Enfield Bullet 350')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">High-Ticket P2P</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Royal Enfield Bullet 350</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Vintage Edition • Patna</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
@@ -394,9 +426,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1621009897148-5c45ce126b48?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Bajaj Dominar 400">
+                        <button onclick="toggleWishlist(this, 'Bajaj Dominar 400')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">High-Ticket P2P</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1621009897148-5c45ce126b48?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Bajaj Dominar 400</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Touring Spec • Patna</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
@@ -410,18 +445,27 @@
                 </div>
             </section>
 
-            <!-- Regular P2P Rentals Section (BUG FIXED: ADDED FILTER CLASS) -->
             <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Continental GT 650">
+                        <button onclick="toggleWishlist(this, 'Continental GT 650')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
-                        <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                        <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">P2P Rental</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Continental GT 650</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Lender: Rahul K. ★ 4.9</p>
+                        
+                        <!-- FUNCTIONAL CO-RENT CLICK -->
+                        <div onclick="initiateCoRent('Continental GT 650')" class="flex items-center space-x-1 mb-2 mt-1 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+                            <svg class="w-3 h-3 text-premium-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="text-[8px] font-bold text-premium-dark uppercase tracking-widest border-b border-dashed border-gray-400">Co-Rent (Split Cost)</span>
+                        </div>
+
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium">₹1,200</span>
                             <div class="flex gap-2">
@@ -430,9 +474,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
-                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">P2P Rental</div>
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Leather Powerlifting Belt">
+                        <button onclick="toggleWishlist(this, 'Leather Powerlifting Belt')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
+                        <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 pointer-events-none">P2P Rental</div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3 img-zoom"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=400" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Leather Powerlifting Belt</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">140kg Tested • Heavy Duty</p>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
@@ -448,7 +495,7 @@
         </div>
 
         <!-- 10. CREATOR TOOLS -->
-        <section class="pt-24 pb-6 mt-10 border-t border-gray-300">
+        <section id="creator-tools" class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h2 class="text-3xl font-serif text-premium-dark mb-1">Creator Tools</h2>
@@ -506,20 +553,50 @@
             </div>
             <div>
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Legal Framework</h3>
-                <ul class="text-[11px] text-premium-muted space-y-2">
-                    <li><a href="#" class="hover:text-premium-dark transition">Privacy Architecture</a></li>
-                    <li><a href="#" class="hover:text-premium-dark transition">Terms of Service</a></li>
+                <ul class="text-[11px] text-premium-muted space-y-2 flex flex-col items-center md:items-start">
+                    <li><button onclick="togglePrivacyModal()" class="hover:text-premium-dark transition border-b border-transparent hover:border-premium-dark pb-0.5">Privacy Architecture</button></li>
+                    <li><button onclick="toggleTermsModal()" class="hover:text-premium-dark transition border-b border-transparent hover:border-premium-dark pb-0.5">Terms of Service</button></li>
                 </ul>
             </div>
             <div>
                 <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Ecosystem Hub</h3>
-                <p class="text-[11px] text-premium-muted hover:text-premium-dark transition cursor-pointer">aestheticaworld@gmail.com</p>
+                <a href="mailto:aestheticaworld@gmail.com" class="text-[11px] text-premium-muted hover:text-premium-dark transition cursor-pointer border-b border-transparent hover:border-premium-dark pb-0.5 inline-block">aestheticaworld@gmail.com</a>
+                <p class="text-[9px] text-gray-400 mt-2">Support & Business Inquiries</p>
             </div>
         </div>
         <div class="max-w-[1400px] mx-auto mt-12 pt-8 border-t border-gray-100 text-[10px] text-premium-muted text-center uppercase tracking-widest">
             &copy; 2026 Aesthetica Engine. Built for the culture.
         </div>
     </footer>
+
+    <!-- LEGAL MODALS -->
+    <div id="privacy-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex justify-center items-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
+            <button onclick="togglePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
+            <h2 class="text-2xl font-serif text-premium-dark mb-1">Privacy Architecture</h2>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Data Vault & Security Protocols</p>
+            <div class="overflow-y-auto hide-scroll flex-grow pr-2 text-[11px] text-premium-muted space-y-4 leading-relaxed">
+                <p><strong class="text-premium-dark">1. AR Processing & Biometrics:</strong> The AR Drape & Fit engine utilizes local browser APIs. Your camera feed is processed strictly on your device. We do not transmit, record, or store any facial recognition data.</p>
+                <p><strong class="text-premium-dark">2. Supabase Encryption:</strong> User dimensions, aesthetic preferences, and order histories are stored in our decentralized Supabase architecture. All data is protected via Row Level Security (RLS).</p>
+                <p><strong class="text-premium-dark">3. Payment Gateway:</strong> We use Razorpay for secure checkout. Aesthetica does not log, process, or store credit card numbers or UPI PINs. All financial nodes are AES-256 encrypted end-to-end.</p>
+            </div>
+            <button onclick="togglePrivacyModal()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-bold py-3 mt-6 rounded-sm hover:bg-gray-800 transition">Acknowledge</button>
+        </div>
+    </div>
+
+    <div id="terms-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex justify-center items-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
+            <button onclick="toggleTermsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
+            <h2 class="text-2xl font-serif text-premium-dark mb-1">Terms of Service</h2>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Platform Guidelines & Liabilities</p>
+            <div class="overflow-y-auto hide-scroll flex-grow pr-2 text-[11px] text-premium-muted space-y-4 leading-relaxed">
+                <p><strong class="text-premium-dark">1. P2P Rental Agreement:</strong> The "Creator Garage" acts solely as a discovery node. The lender and borrower assume total mutual liability for physical damage, insurance, and late returns.</p>
+                <p><strong class="text-premium-dark">2. Affiliate Purchases:</strong> Items marked as "Affiliate Buy" redirect to third-party marketplaces. Aesthetica is not liable for shipping delays or quality control of external vendors.</p>
+                <p><strong class="text-premium-dark">3. Account Termination:</strong> We reserve the right to suspend any AR Profile or Vault access if fraudulent checkout attempts or community violations are detected by our automated systems.</p>
+            </div>
+            <button onclick="toggleTermsModal()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-bold py-3 mt-6 rounded-sm hover:bg-gray-800 transition">Accept Terms</button>
+        </div>
+    </div>
 
     <!-- 12. SUPABASE & APP LOGIC SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -534,26 +611,20 @@
         let currentOrderPayload = {};
         let isLoginMode = true; 
         
-        // BUG FIX: Cart items memory using LocalStorage
+        // Persistent Memory States
         let cartItems = JSON.parse(localStorage.getItem('aesthetica_cart')) || [];
+        let wishlistItems = JSON.parse(localStorage.getItem('aesthetica_wishlist')) || [];
 
         // PWA Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Failed:', err));
-            });
-        }
-
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Failed:', err)); }); }
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
         document.getElementById('install-btn').addEventListener('click', async () => {
-            if(deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            } else { showToast("To install: Use your browser's 'Add to Home Screen' menu ✨"); }
+            if(deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; } 
+            else { showToast("To install: Use your browser's 'Add to Home Screen' menu ✨"); }
         });
 
+        // UI Helpers
         function showToast(message, type = "success") {
             const c = document.getElementById('toast-container');
             const t = document.createElement('div');
@@ -565,102 +636,145 @@
             setTimeout(() => { t.classList.remove('toast-enter-active'); t.classList.add('toast-leave-active'); setTimeout(() => t.remove(), 300); }, 3500);
         }
 
-        // ==========================================
-        // FEATURE: LIVE TEXT SEARCH ENGINE
-        // ==========================================
-        function searchLiveFeed(query) {
-            const q = query.toLowerCase();
-            const products = document.querySelectorAll('.product-card');
-            products.forEach(card => {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                if(title.includes(q)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+
+        function updateCity() {
+            const current = document.getElementById('user-location').innerText;
+            const newCity = prompt("Enter your city to update local boutique feeds:", current);
+            if(newCity && newCity.trim() !== "") {
+                document.getElementById('user-location').innerText = newCity.trim();
+                showToast(`Local feeds calibrated for ${newCity.trim()} 📍`);
+            }
+        }
+
+        function initiateCoRent(itemName) {
+            navigator.clipboard.writeText(`Hey! Let's co-rent this ${itemName} on Aesthetica. Split the cost? https://aesthetica-theta.vercel.app/`);
+            showToast("Split-cost link copied to clipboard! Share it with your co-renter. 🤝");
         }
 
         // ==========================================
-        // FEATURE: CART DRAWER & LOCAL STORAGE
+        // SMART WISHLIST VAULT
+        // ==========================================
+        function initWishlistUI() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                const btn = card.querySelector('.heart-btn');
+                if(name && btn && wishlistItems.includes(name)) { btn.classList.add('wishlist-active'); }
+            });
+        }
+        
+        function toggleWishlist(btn, itemName) {
+            btn.classList.toggle('wishlist-active');
+            if(btn.classList.contains('wishlist-active')) {
+                if(!wishlistItems.includes(itemName)) wishlistItems.push(itemName);
+                showToast(`${itemName} added to your Vault ♥`);
+            } else {
+                wishlistItems = wishlistItems.filter(i => i !== itemName);
+                showToast(`${itemName} removed from your Vault ♡`, "error");
+            }
+            localStorage.setItem('aesthetica_wishlist', JSON.stringify(wishlistItems));
+            updateVaultUI();
+        }
+
+        function toggleVaultModal() { 
+            if(!currentUser) return showToast("Login required to view Vault", "error");
+            document.getElementById('vault-modal').classList.toggle('hidden');
+            if(!document.getElementById('vault-modal').classList.contains('hidden')) updateVaultUI();
+        }
+
+        function updateVaultUI() {
+            const container = document.getElementById('vault-list-container');
+            if(wishlistItems.length === 0) {
+                container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 uppercase tracking-widest">Vault is empty.</p>';
+            } else {
+                container.innerHTML = '';
+                wishlistItems.forEach(item => {
+                    container.innerHTML += `<div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center mb-3">
+                        <span class="text-sm font-medium text-premium-dark">${item}</span>
+                        <span class="text-red-500 text-[10px] uppercase tracking-widest font-bold">Saved ♥</span>
+                    </div>`;
+                });
+            }
+        }
+
+        // ==========================================
+        // SMART CART STACKING
         // ==========================================
         function toggleCartDrawer() {
             const overlay = document.getElementById('cart-drawer-overlay');
             const drawer = document.getElementById('cart-drawer');
             if (overlay.classList.contains('hidden')) {
-                overlay.classList.remove('hidden');
-                setTimeout(() => { overlay.classList.remove('opacity-0'); drawer.classList.add('drawer-open'); }, 10);
+                overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.remove('opacity-0'); drawer.classList.add('drawer-open'); }, 10);
             } else {
-                drawer.classList.remove('drawer-open'); overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
+                drawer.classList.remove('drawer-open'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
 
         function addToCart(name, price) {
-            cartItems.push({ name, price });
-            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems)); // Save to memory
+            let existing = cartItems.find(i => i.name === name);
+            if(existing) { existing.qty += 1; existing.total += price; } 
+            else { cartItems.push({ name: name, price: price, qty: 1, total: price }); }
+            
+            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems));
             updateCartUI();
             showToast(`${name} added to cart!`);
         }
 
         function removeCartItem(index) {
             cartItems.splice(index, 1);
-            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems)); // Save to memory
+            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems));
             updateCartUI();
         }
 
         function updateCartUI() {
-            document.getElementById('cart-counter-btn').innerText = `Cart (${cartItems.length})`;
+            let totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-counter-btn').innerText = `Cart (${totalItems})`;
             const container = document.getElementById('cart-items-container');
-            let total = 0;
-            
-            if (cartItems.length === 0) {
-                container.innerHTML = '<p class="text-xs text-gray-400 text-center mt-10 uppercase tracking-widest">Cart is empty</p>';
-            } else {
+            let grandTotal = 0;
+            if (cartItems.length === 0) { container.innerHTML = '<p class="text-xs text-gray-400 text-center mt-10 uppercase tracking-widest">Cart is empty</p>'; } 
+            else {
                 container.innerHTML = '';
                 cartItems.forEach((item, index) => {
-                    total += item.price;
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                            <div><h4 class="text-[11px] font-bold text-premium-dark">${item.name}</h4><span class="text-[10px] text-gray-500">₹${item.price}</span></div>
-                            <button onclick="removeCartItem(${index})" class="text-gray-400 hover:text-red-500 text-xs">✕</button>
-                        </div>`;
+                    grandTotal += item.total;
+                    let qtyBadge = item.qty > 1 ? `<span class="bg-gray-100 px-1.5 py-0.5 rounded-sm text-[9px] ml-2">x${item.qty}</span>` : '';
+                    container.innerHTML += `<div class="flex justify-between items-center border-b border-gray-100 pb-3"><div><h4 class="text-[11px] font-bold text-premium-dark flex items-center">${item.name} ${qtyBadge}</h4><span class="text-[10px] text-gray-500">₹${item.total}</span></div><button onclick="removeCartItem(${index})" class="text-gray-400 hover:text-red-500 text-xs">✕</button></div>`;
                 });
             }
-            document.getElementById('cart-total').innerText = `₹${total}`;
+            document.getElementById('cart-total').innerText = `₹${grandTotal}`;
         }
-
+        
         function checkoutCart() {
             if(cartItems.length === 0) return showToast("Cart is empty", "error");
             toggleCartDrawer();
-            let total = cartItems.reduce((sum, item) => sum + item.price, 0);
-            initiateCheckout(`Cart Bundle (${cartItems.length} items)`, total, 'Cart Purchase');
+            let grandTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+            initiateCheckout(`Cart Bundle (${cartItems.length} styles)`, grandTotal, 'Cart Purchase');
         }
 
-        // Initialize Cart UI on load
-        updateCartUI();
+        // ==========================================
+        // SMART SEARCH ENGINE WITH EMPTY STATE
+        // ==========================================
+        function searchLiveFeed(query) {
+            const q = query.toLowerCase();
+            const products = document.querySelectorAll('.product-card');
+            let matchFound = false;
+            products.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                if(title.includes(q)) { card.style.display = 'flex'; matchFound = true; } 
+                else { card.style.display = 'none'; }
+            });
+            
+            if(!matchFound && q.trim() !== '') document.getElementById('empty-search-state').classList.remove('hidden');
+            else document.getElementById('empty-search-state').classList.add('hidden');
+        }
 
-        // ==========================================
-        // CATEGORY FILTERS
-        // ==========================================
+        // Filters & AI Search
         function filterFeed(category) {
             const sections = document.querySelectorAll('.feed-section');
             const btns = document.querySelectorAll('.category-btn');
-            btns.forEach(btn => {
-                btn.classList.remove('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1');
-                btn.classList.add('hover:text-premium-dark', 'transition');
-            });
+            btns.forEach(btn => { btn.classList.remove('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1'); btn.classList.add('hover:text-premium-dark', 'transition'); });
             event.target.classList.add('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1');
-
-            sections.forEach(sec => {
-                if (category === 'all' || sec.getAttribute('data-category') === category) {
-                    sec.style.display = 'block';
-                } else {
-                    sec.style.display = 'none';
-                }
-            });
+            sections.forEach(sec => { if (category === 'all' || sec.getAttribute('data-category') === category) sec.style.display = 'block'; else sec.style.display = 'none'; });
         }
-
         function triggerAISearch() {
             const input = document.getElementById('ai-photo-search');
             if(input.files && input.files[0]) {
@@ -670,7 +784,7 @@
             }
         }
 
-        // Modals & Auth Toggles
+        // Modals Toggles
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
@@ -684,8 +798,10 @@
             document.getElementById('orders-modal').classList.toggle('hidden');
             if(!document.getElementById('orders-modal').classList.contains('hidden')) fetchMyOrders();
         }
+        function togglePrivacyModal() { document.getElementById('privacy-modal').classList.toggle('hidden'); }
+        function toggleTermsModal() { document.getElementById('terms-modal').classList.toggle('hidden'); }
 
-        // Checkout Engine
+        // Checkout
         function initiateCheckout(productName, price, type) {
             if (!currentUser) { toggleAuthModal(); return showToast("Login required to purchase"); }
             currentOrderPayload = { name: productName, price: price, type: type };
@@ -694,32 +810,19 @@
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
-        
         async function processPayment() {
             const btn = document.getElementById('pay-btn');
             const originalText = btn.innerText;
             btn.innerText = "Processing via Razorpay...";
-            
             setTimeout(async () => {
-                const { error } = await supabaseClient.from('orders').insert({
-                    user_id: currentUser.id, product_name: currentOrderPayload.name, price: currentOrderPayload.price, order_type: currentOrderPayload.type
-                });
-                
-                if(currentOrderPayload.type === 'Cart Purchase') { 
-                    cartItems = []; 
-                    localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems));
-                    updateCartUI(); 
-                }
-                
-                closeCheckout(); 
-                btn.innerText = originalText;
-                
-                if (!error) showToast(`Payment Successful! ${currentOrderPayload.name} ordered.`);
-                else showToast("Database Error: " + error.message, "error");
+                const { error } = await supabaseClient.from('orders').insert({ user_id: currentUser.id, product_name: currentOrderPayload.name, price: currentOrderPayload.price, order_type: currentOrderPayload.type });
+                if(currentOrderPayload.type === 'Cart Purchase') { cartItems = []; localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems)); updateCartUI(); }
+                closeCheckout(); btn.innerText = originalText;
+                if (!error) showToast(`Payment Successful! ${currentOrderPayload.name} ordered.`); else showToast("Database Error: " + error.message, "error");
             }, 1500);
         }
 
-        // Order History Fetch
+        // DB Data
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
             container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>';
@@ -729,34 +832,28 @@
                 if(data.length===0) container.innerHTML = '<p class="text-center text-sm text-gray-500 mt-6">No orders yet.</p>';
                 data.forEach(o => {
                     const date = new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-                    let badge = (o.order_type === 'P2P Rental' || o.order_type === 'Creator Garage') 
-                        ? '<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Rented</span>'
-                        : '<span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Processing</span>';
-                    
-                    container.innerHTML += `<div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center mb-3 hover:bg-gray-50 transition-colors">
-                        <div><div class="flex items-center gap-3 mb-1"><h4 class="text-sm font-medium text-premium-dark">${o.product_name}</h4>${badge}</div><p class="text-[10px] text-gray-500 uppercase">${date} • ${o.order_type}</p></div>
-                        <span class="text-lg font-serif font-medium text-premium-dark">₹${o.price}</span></div>`;
+                    let badge = (o.order_type === 'P2P Rental' || o.order_type === 'Creator Garage') ? '<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Rented</span>' : '<span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Processing</span>';
+                    container.innerHTML += `<div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center mb-3 hover:bg-gray-50 transition-colors"><div><div class="flex items-center gap-3 mb-1"><h4 class="text-sm font-medium text-premium-dark">${o.product_name}</h4>${badge}</div><p class="text-[10px] text-gray-500 uppercase">${date} • ${o.order_type}</p></div><span class="text-lg font-serif font-medium text-premium-dark">₹${o.price}</span></div>`;
                 });
             }
         }
-
-        // FEATURE UPDATE: Supabase Products now have Add to Cart buttons
+        
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
             const { data, error } = await supabaseClient.from('products').select('*');
-            
             if(data && data.length > 0) {
                 cheapContainer.innerHTML = ''; localContainer.innerHTML = '';
                 data.forEach(p => {
                     const cleanTitle = p.title.replace(/'/g, "\\'");
-                    const badgeHtml = p.is_local 
-                        ? `<div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>`
-                        : `<div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>`;
+                    const badgeHtml = p.is_local ? `<div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Local Boutique</div>` : `<div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm pointer-events-none">Cheapest Drop</div>`;
                     
-                    const card = `<div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    const card = `<div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift relative" data-name="${cleanTitle}">
+                        <button onclick="toggleWishlist(this, '${cleanTitle}')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
                         ${badgeHtml}
-                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${p.image_url || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400'}" class="w-full h-full object-cover"></div>
+                        <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${p.image_url || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400'}" loading="lazy" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">${p.title}</h3>
                         <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹${p.price}</span>
@@ -767,129 +864,82 @@
                         </div></div>`;
                     if(p.is_local) localContainer.innerHTML += card; else cheapContainer.innerHTML += card;
                 });
+                initWishlistUI(); // Set heart states for new elements
             }
         }
 
-        // AR Profile Engine
+        // AR Studio
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
             const modal = document.getElementById('profile-modal');
             modal.classList.toggle('hidden');
             if (!modal.classList.contains('hidden')) {
-                document.getElementById('ar-uploaded-img').classList.add('hidden');
-                document.getElementById('cinematic-controls').classList.add('hidden');
-                document.getElementById('ar-video-feed').classList.remove('hidden');
-                document.getElementById('scan-line').classList.remove('hidden');
-                calculatePowerFit(); 
-                try {
-                    arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                    document.getElementById('ar-video-feed').srcObject = arStream;
-                } catch (err) { 
-                    document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo."; 
-                    document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-red-500');
-                }
+                document.getElementById('ar-uploaded-img').classList.add('hidden'); document.getElementById('cinematic-controls').classList.add('hidden'); document.getElementById('ar-video-feed').classList.remove('hidden'); document.getElementById('scan-line').classList.remove('hidden'); calculatePowerFit(); 
+                try { arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }); document.getElementById('ar-video-feed').srcObject = arStream; } catch (err) { document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo."; document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-red-500'); }
             } else { if(arStream) arStream.getTracks().forEach(t => t.stop()); }
         }
-
         function handleARPhotoUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 if(arStream) arStream.getTracks().forEach(t => t.stop());
-                document.getElementById('ar-video-feed').classList.add('hidden');
-                const img = document.getElementById('ar-uploaded-img');
-                img.classList.remove('hidden'); img.classList.remove('cinematic-35mm'); 
-                document.getElementById('ar-status-text').innerText = "Analyzing Dimensions...";
-                
-                const r = new FileReader();
-                r.onload = function(e) {
-                    img.src = e.target.result;
-                    setTimeout(() => {
-                        document.getElementById('scan-line').classList.add('hidden');
-                        document.getElementById('ar-status-text').innerText = "Dimensions Extracted. Map Ready.";
-                        document.getElementById('cinematic-controls').classList.remove('hidden');
-                    }, 1500);
-                }
-                r.readAsDataURL(file);
+                document.getElementById('ar-video-feed').classList.add('hidden'); const img = document.getElementById('ar-uploaded-img'); img.classList.remove('hidden'); img.classList.remove('cinematic-35mm'); document.getElementById('ar-status-text').innerText = "Analyzing Dimensions...";
+                const r = new FileReader(); r.onload = function(e) { img.src = e.target.result; setTimeout(() => { document.getElementById('scan-line').classList.add('hidden'); document.getElementById('ar-status-text').innerText = "Dimensions Extracted. Map Ready."; document.getElementById('cinematic-controls').classList.remove('hidden'); }, 1500); }; r.readAsDataURL(file);
             }
         }
         function apply35mmFilter() { document.getElementById('ar-uploaded-img').classList.add('cinematic-35mm'); showToast("Kodak Portra 400 aesthetic applied! 📸"); }
-
         function calculatePowerFit() {
-            const phys = document.getElementById('profile-body').value;
-            const box = document.getElementById('power-fit-result');
-            if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape.";
-            else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic.";
-            else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
+            const phys = document.getElementById('profile-body').value; const box = document.getElementById('power-fit-result');
+            if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape."; else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic."; else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
-        // Auth Logic
+        // Auth
         async function handleAuth() {
-            const email = document.getElementById('email-input').value;
-            const password = document.getElementById('password-input').value;
+            const email = document.getElementById('email-input').value; const password = document.getElementById('password-input').value;
             if(!email || !password) return showToast("Enter credentials", "error");
             document.getElementById('submit-auth-btn').innerText = "Syncing...";
             try {
-                if(isLoginMode) {
-                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    location.reload();
-                } else {
-                    const { error } = await supabaseClient.auth.signUp({ email, password });
-                    if (error) throw error;
-                    location.reload();
-                }
-            } catch (error) {
-                showToast(error.message, "error");
-                document.getElementById('submit-auth-btn').innerText = isLoginMode ? "Login" : "Sign Up";
-            }
+                if(isLoginMode) { const { error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; location.reload(); } 
+                else { const { error } = await supabaseClient.auth.signUp({ email, password }); if (error) throw error; location.reload(); }
+            } catch (error) { showToast(error.message, "error"); document.getElementById('submit-auth-btn').innerText = isLoginMode ? "Login" : "Sign Up"; }
         }
         async function handleOAuth(p) { await supabaseClient.auth.signInWithOAuth({ provider: p, options: { redirectTo: window.location.origin } }); }
-        
-        async function handleLogout() {
-            document.getElementById('auth-btn').innerText = "Exiting...";
-            await supabaseClient.auth.signOut();
-            location.reload();
-        }
+        async function handleLogout() { await supabaseClient.auth.signOut(); location.reload(); }
         
         async function checkSession() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if(session) {
-                currentUser = session.user;
-                document.getElementById('auth-btn').innerText = "Logout";
-                document.getElementById('auth-btn').onclick = handleLogout;
+                currentUser = session.user; 
                 
-                document.getElementById('user-menu').classList.remove('hidden');
+                // PERSONALIZED WELCOME UPDATE
+                const namePrefix = currentUser.email.split('@')[0];
+                const authBtn = document.getElementById('auth-btn');
+                authBtn.innerText = `Hi, ${namePrefix}`;
+                authBtn.onclick = null; // Remove modal popup since logged in
+                authBtn.classList.remove('bg-premium-dark', 'text-white');
+                authBtn.classList.add('bg-gray-100', 'text-premium-dark', 'pointer-events-none');
+                
+                document.getElementById('user-menu').classList.remove('hidden'); 
                 document.getElementById('user-menu').classList.add('flex');
                 
                 const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
                 if (data) {
-                    if(data.height) document.getElementById('profile-height').value = data.height;
-                    if(data.body_type) document.getElementById('profile-body').value = data.body_type;
-                    if(data.style_preference) {
-                        document.getElementById('profile-style').value = data.style_preference;
-                        const titles = { 'old_money': 'Curated: Old Money Finds', 'vintage_leather': 'Curated: Vintage Edgy', 'traditional': 'Curated: Premium Traditional', 'athletic': 'Curated: Gym & Lifting Gear' };
-                        if(titles[data.style_preference]) document.getElementById('dynamic-feed-title').innerText = titles[data.style_preference];
-                    }
+                    if(data.height) document.getElementById('profile-height').value = data.height; if(data.body_type) document.getElementById('profile-body').value = data.body_type;
+                    if(data.style_preference) { document.getElementById('profile-style').value = data.style_preference; const titles = { 'old_money': 'Curated: Old Money Finds', 'vintage_leather': 'Curated: Vintage Edgy', 'traditional': 'Curated: Premium Traditional', 'athletic': 'Curated: Gym & Lifting Gear' }; if(titles[data.style_preference]) document.getElementById('dynamic-feed-title').innerText = titles[data.style_preference]; }
                 }
             }
         }
-
+        
         async function saveProfile() {
-            const h = document.getElementById('profile-height').value;
-            const b = document.getElementById('profile-body').value;
-            const s = document.getElementById('profile-style').value;
+            const h = document.getElementById('profile-height').value; const b = document.getElementById('profile-body').value; const s = document.getElementById('profile-style').value;
             document.getElementById('save-profile-btn').innerText = "Saving Matrix...";
             const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, height: h, body_type: b, style_preference: s });
-            if(error) {
-                showToast("DB Error: " + error.message, "error");
-                document.getElementById('save-profile-btn').innerText = "Lock Calibration";
-            } else { 
-                showToast("Matrix Locked & Feed Updated!"); 
-                setTimeout(() => location.reload(), 1000); 
-            }
+            if(error) { showToast("DB Error: " + error.message, "error"); document.getElementById('save-profile-btn').innerText = "Lock Calibration"; } 
+            else { showToast("Matrix Locked & Feed Updated!"); setTimeout(() => location.reload(), 1000); }
         }
 
         // Boot
+        updateCartUI();
+        initWishlistUI();
         checkSession(); 
         loadLiveProducts();
     </script>
