@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <!-- Importing a High-Contrast Luxury Serif Font that perfectly matches the vibe -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&amp;display=swap');
+      
+      .brand-title {
+        font-family: 'Cormorant Garamond', serif;
+      }
+    </style>
+
+    <!-- Heavy Gaussian Blur filter to create the natural out-of-focus plant shadows -->
+    <filter id="leafShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="22" />
+    </filter>
+    
+    <!-- Very subtle paper noise texture -->
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.04 0" />
+    </filter>
+  </defs>
+  
+  <!-- 1. Base Cream/Off-White Background (Exact match to the reference image) -->
+  <rect width="100%" height="100%" fill="#F3EFEA" />
+  
+  <!-- Subtle Texture Overlay -->
+  <rect width="100%" height="100%" style="pointer-events:none;" filter="url(#noise)" />
+
+  <!-- 2. Abstract Plant Shadows (Mimicking the diagonal sunlight shadows in the image) -->
+  <g fill="#2B2118" opacity="0.12" filter="url(#leafShadow)" style="mix-blend-mode: multiply;">
+    <!-- Main thick stem crossing diagonally -->
+    <path d="M-100,600 C 150,400 250,200 400,-100 L 200,-100 C 100,100 0,300 -200,600 Z" />
+    <!-- Lower right leaf shadow -->
+    <path d="M150,600 C 300,500 400,300 600,100 C 500,200 350,400 250,600 Z" />
+    <!-- Top right leaf shadow -->
+    <path d="M300,200 C 450,150 550,50 700,-50 C 500,0 400,100 300,200 Z" />
+    <!-- Left subtle curve -->
+    <path d="M-50,300 C 100,250 250,300 400,450 C 200,350 50,300 -50,300 Z" />
+    <!-- Top left sweeping shadow -->
+    <path d="M200,-50 C 300,100 450,250 650,350 C 450,200 250,50 200,-50 Z" />
+  </g>
+
+  <!-- 3. The Clean "Aesthetica" Text Only -->
+  <!-- Dark Espresso Brown color matching the reference image's font color -->
+  <text x="400" y="290" class="brand-title" font-size="145" font-weight="500" fill="#44362A" text-anchor="middle" letter-spacing="-1">
+    Aesthetica
+  </text>
+  
+</svg>
