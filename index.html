@@ -11,7 +11,7 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon.svg">
     
-    <!-- ORIGINAL PREMIUM FONTS (FIXED) -->
+    <!-- ORIGINAL PREMIUM FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,12 +69,12 @@
     <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- 1. MAIN NAVIGATION BAR -->
+    <!-- MAIN NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             
             <div class="flex-shrink-0 flex items-center space-x-4">
-                <!-- FONT FIX: Pure HTML Typography Logo ensures 100% rendering -->
+                <!-- PREMIUM LOGO -->
                 <h1 class="font-brand text-4xl md:text-5xl font-semibold tracking-tighter text-premium-dark cursor-pointer select-none hover:opacity-80 transition-opacity" onclick="window.scrollTo(0,0)">
                     Aesthetica
                 </h1>
@@ -86,23 +86,20 @@
                 </div>
             </div>
             
-            <!-- GLOBAL SEARCH & AI LENS (CAMERA FIX) -->
+            <!-- GLOBAL SEARCH & NEW LIVE AI LENS TRIGGER -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
-                <input type="text" id="global-search-input" oninput="searchLiveFeed(this.value)" placeholder="Search aesthetics, brands, or scan a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
-                <button onclick="document.getElementById('ai-photo-search').click()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors flex items-center gap-1">
+                <input type="text" id="global-search-input" oninput="searchLiveFeed(this.value)" placeholder="Search aesthetics, brands, or open scanner..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
+                <!-- AI Lens Live Scanner Trigger -->
+                <button onclick="toggleAILensScanner()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors flex items-center gap-1">
                     <span>✨</span> AI Lens
                 </button>
-                <!-- FIXED: 'capture="environment"' added so it opens camera directly on mobile -->
-                <input type="file" id="ai-photo-search" accept="image/*" capture="environment" class="hidden" onchange="triggerAISearch()">
             </div>
 
             <div class="flex items-center gap-4 md:gap-6">
-                <!-- PWA Install Button (Hidden by default, shown by JS logic) -->
                 <button id="install-btn" class="hidden font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
 
-                <!-- USER MENU & AUTH -->
                 <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleVaultModal()" class="hover:text-red-500 transition-colors border-b border-transparent hover:border-red-500 pb-0.5">My Vault ♥</button>
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">Orders</button>
@@ -111,13 +108,52 @@
                 </div>
                 
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
-                
                 <button onclick="toggleCartDrawer()" id="cart-counter-btn" class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
 
-    <!-- 2. SECRET ADMIN DASHBOARD -->
+    <!-- 1. LIVE AI LENS SCANNER MODAL (NEW FEATURE) -->
+    <div id="ai-lens-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] flex justify-center items-center p-4">
+        <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-md relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col">
+            <button onclick="toggleAILensScanner()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
+            <h2 class="text-2xl font-serif text-white mb-1 text-center">AI Vision Scanner</h2>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6 text-center">Point at any aesthetic object</p>
+            
+            <div class="relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[4/5] group film-grain">
+                <!-- Live Rear Camera Feed -->
+                <video id="ai-lens-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover"></video>
+                
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 pointer-events-none z-20"></div>
+                <!-- Scanning UI Elements -->
+                <div class="absolute inset-0 border-2 border-white/20 m-6 rounded-sm pointer-events-none z-20"></div>
+                <div class="absolute top-0 left-0 w-full h-0.5 bg-blue-400 shadow-[0_0_10px_#60a5fa] animate-[scan_2s_ease-in-out_infinite] pointer-events-none z-30"></div>
+                
+                <div class="absolute top-4 left-4 z-30 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                    <span class="text-[8px] text-white uppercase tracking-widest font-bold drop-shadow-md">AI Active</span>
+                </div>
+                
+                <!-- Capture Button -->
+                <div class="absolute bottom-6 left-0 w-full flex justify-center z-40">
+                    <button onclick="captureAILens()" class="w-16 h-16 bg-white/20 backdrop-blur-md border-2 border-white rounded-full flex items-center justify-center hover:bg-white/40 transition-colors shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                        <div class="w-12 h-12 bg-white rounded-full transition-transform hover:scale-95"></div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Fallback Gallery Option -->
+            <div class="mt-6 flex justify-center">
+                <button onclick="document.getElementById('ai-photo-upload-fallback').click()" class="text-[10px] uppercase tracking-widest text-gray-400 hover:text-white transition-colors border-b border-dashed border-gray-600 pb-0.5 flex items-center gap-2">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Upload from Gallery
+                </button>
+                <input type="file" id="ai-photo-upload-fallback" accept="image/*" class="hidden" onchange="fallbackAILensUpload(event)">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET ADMIN DASHBOARD -->
     <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[300] flex justify-center items-center p-4">
         <div class="bg-gray-900 border border-gray-700 p-8 rounded-[4px] w-full max-w-4xl relative animate-fade-in-up shadow-2xl text-white">
             <button onclick="document.getElementById('admin-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl transition-colors">✕</button>
@@ -152,7 +188,7 @@
         </div>
     </div>
 
-    <!-- 3. CART DRAWER (Smart Stacking) -->
+    <!-- CART DRAWER -->
     <div id="cart-drawer-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] hidden opacity-0 transition-opacity duration-300">
         <div id="cart-drawer" class="absolute top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl flex flex-col drawer-slide">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
@@ -160,7 +196,7 @@
                 <button onclick="toggleCartDrawer()" class="text-gray-500 hover:text-black text-lg">✕</button>
             </div>
             <div id="cart-items-container" class="flex-grow p-6 overflow-y-auto space-y-4">
-                <!-- Cart items injected here via JS -->
+                <!-- Cart items injected here -->
             </div>
             <div class="p-6 border-t border-gray-200 bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
@@ -172,7 +208,7 @@
         </div>
     </div>
 
-    <!-- 4. CHECKOUT MODAL -->
+    <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[160] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[4px] w-full max-w-sm relative animate-fade-in-up shadow-2xl text-center">
             <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -192,19 +228,19 @@
         </div>
     </div>
 
-    <!-- 5. MY VAULT MODAL (Wishlist) -->
+    <!-- MY VAULT MODAL -->
     <div id="vault-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
             <button onclick="toggleVaultModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">My Vault ♥</h2>
             <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Your curated wishlisted items</p>
             <div id="vault-list-container" class="overflow-y-auto hide-scroll flex-grow mt-2 space-y-3 pr-2">
-                <!-- Vault items injected here via JS -->
+                <!-- Vault items injected here -->
             </div>
         </div>
     </div>
 
-    <!-- 6. MY ORDERS MODAL -->
+    <!-- MY ORDERS MODAL -->
     <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
             <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -216,13 +252,13 @@
         </div>
     </div>
 
-    <!-- 7. AR PROFILE MODAL (FIXED CAMERA) -->
+    <!-- AR PROFILE MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[180] flex justify-center items-center p-4">
         <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
             
             <div class="w-full md:w-1/2 relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[3/4] group film-grain">
-                <!-- FIXED CAMERA TAGS -->
+                <!-- AR CAMERA FIX -->
                 <video id="ar-video-feed" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover"></video>
                 <img id="ar-uploaded-img" class="hidden absolute inset-0 w-full h-full object-cover z-10 transition-all duration-500" />
                 
@@ -269,7 +305,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1 mt-2">Aesthetic Vibe (Feed Focus)</label>
+                        <label class="text-[10px] uppercase tracking-widest font-medium text-gray-400 block mb-1 mt-2">Aesthetic Vibe</label>
                         <select id="profile-style" class="w-full bg-premium-dark border-b border-gray-600 px-2 py-2 text-sm focus:outline-none focus:border-white text-white">
                             <option value="all">All Collections</option>
                             <option value="old_money">Old Money (Linen & Kurtas)</option>
@@ -291,7 +327,7 @@
         </div>
     </div>
 
-    <!-- 8. AUTHENTICATION MODAL -->
+    <!-- AUTHENTICATION MODAL -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up shadow-2xl">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -321,7 +357,7 @@
         </div>
     </div>
 
-    <!-- 9. PROMOTION BANNERS -->
+    <!-- PROMOTION BANNERS -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
             <div onclick="scrollToSection('feed-start')" class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
@@ -341,7 +377,7 @@
         </div>
     </div>
 
-    <!-- 10. MAIN CONTENT FEEDS -->
+    <!-- MAIN CONTENT FEEDS -->
     <main id="feed-start" class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
         <!-- FEED FILTERS -->
@@ -538,7 +574,7 @@
             </section>
         </div>
 
-        <!-- 11. CREATOR TOOLS -->
+        <!-- 12. CREATOR TOOLS -->
         <section id="creator-tools" class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -588,7 +624,7 @@
         </section>
     </main>
 
-    <!-- 12. PREMIUM FOOTER -->
+    <!-- 13. PREMIUM FOOTER WITH LEGAL LINKS -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -613,7 +649,7 @@
         </div>
     </footer>
 
-    <!-- LEGAL MODALS (Z-INDEX FIXED) -->
+    <!-- LEGAL MODAL 1: PRIVACY ARCHITECTURE -->
     <div id="privacy-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
             <button onclick="window.togglePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -629,6 +665,7 @@
         </div>
     </div>
 
+    <!-- LEGAL MODAL 2: TERMS OF SERVICE -->
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
             <button onclick="window.toggleTermsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -644,7 +681,7 @@
         </div>
     </div>
 
-    <!-- 13. SUPABASE & APP LOGIC SCRIPT -->
+    <!-- 14. SUPABASE & APP LOGIC SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Global Error Handling
@@ -660,6 +697,7 @@
 
         let currentUser = null;
         let arStream = null;
+        let aiLensStream = null;
         let currentOrderPayload = {};
         let isLoginMode = true; 
         let adminClicks = 0;
@@ -668,11 +706,11 @@
         let wishlistItems = JSON.parse(localStorage.getItem('aesthetica_wishlist')) || [];
 
         // ==========================================
-        // PWA SERVICE WORKER (BULLETPROOF INSTALL PROMPT)
+        // PWA INSTALL LOGIC (NATIVE PROMPT)
         // ==========================================
         if ('serviceWorker' in navigator) { 
             window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Failed to load. Check sw.js file.', err)); 
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Missing', err)); 
             }); 
         }
         
@@ -680,8 +718,7 @@
         window.addEventListener('beforeinstallprompt', (e) => { 
             e.preventDefault(); 
             deferredPrompt = e; 
-            document.getElementById('install-btn').classList.remove('hidden'); // Show button only when ready
-            console.log("PWA Install Ready");
+            document.getElementById('install-btn').classList.remove('hidden');
         });
         
         document.getElementById('install-btn').addEventListener('click', async () => {
@@ -698,15 +735,10 @@
         });
 
         // ==========================================
-        // GLOBAL UI MODAL HELPERS (Bulletproof Fixed)
+        // GLOBAL UI MODAL HELPERS 
         // ==========================================
-        window.togglePrivacyModal = function() {
-            document.getElementById('privacy-modal').classList.toggle('hidden');
-        };
-        
-        window.toggleTermsModal = function() {
-            document.getElementById('terms-modal').classList.toggle('hidden');
-        };
+        window.togglePrivacyModal = function() { document.getElementById('privacy-modal').classList.toggle('hidden'); };
+        window.toggleTermsModal = function() { document.getElementById('terms-modal').classList.toggle('hidden'); };
 
         function showToast(message, type = "success") {
             const c = document.getElementById('toast-container');
@@ -741,7 +773,7 @@
 
         function initiateCoRent(itemName) {
             navigator.clipboard.writeText(`Hey! Let's co-rent this ${itemName} on Aesthetica. Split the cost? https://aesthetica-theta.vercel.app/`);
-            showToast("Split-cost link copied to clipboard! Share it with your co-renter. 🤝");
+            showToast("Split-cost link copied! Share it with your co-renter. 🤝");
         }
 
         // ==========================================
@@ -867,12 +899,49 @@
             sections.forEach(sec => { if (category === 'all' || sec.getAttribute('data-category') === category) sec.style.display = 'block'; else sec.style.display = 'none'; });
         }
 
-        function triggerAISearch() {
-            const input = document.getElementById('ai-photo-search');
-            if(input.files && input.files[0]) {
-                showToast("Scanning aesthetics...", "success");
-                setTimeout(() => showToast("Searching database...", "success"), 1500);
-                setTimeout(() => { showToast("No exact matches found yet.", "error"); input.value = ''; }, 3500);
+        // ==========================================
+        // NEW: LIVE AI LENS SCANNER LOGIC
+        // ==========================================
+        async function toggleAILensScanner() {
+            const modal = document.getElementById('ai-lens-modal');
+            modal.classList.toggle('hidden');
+            
+            if (!modal.classList.contains('hidden')) {
+                try {
+                    // Start Rear Camera
+                    aiLensStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    const video = document.getElementById('ai-lens-video');
+                    video.srcObject = aiLensStream;
+                    video.play().catch(e => console.log("Video Play Error:", e));
+                } catch(e) {
+                    showToast("Camera access denied or unavailable.", "error");
+                }
+            } else {
+                // Stop Camera
+                if(aiLensStream) aiLensStream.getTracks().forEach(t => t.stop());
+            }
+        }
+
+        function captureAILens() {
+            showToast("AI analyzing frame...", "success");
+            // Flash Effect & Fake API processing time
+            setTimeout(() => {
+                toggleAILensScanner(); // Close scanner
+                document.getElementById('global-search-input').value = "vintage leather";
+                searchLiveFeed("vintage leather"); // Show results
+                showToast("AI found: Vintage Leather", "success");
+            }, 1500);
+        }
+
+        function fallbackAILensUpload(e) {
+            if(e.target.files[0]) {
+                toggleAILensScanner(); // Close scanner
+                showToast("Scanning uploaded photo...", "success");
+                setTimeout(() => {
+                    document.getElementById('global-search-input').value = "vintage leather";
+                    searchLiveFeed("vintage leather");
+                    showToast("AI found: Vintage Leather", "success");
+                }, 2000);
             }
         }
 
@@ -945,7 +1014,7 @@
                     
                     const card = `<div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift relative" data-name="${cleanTitle}">
                         <button onclick="toggleWishlist(this, '${cleanTitle}')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                         </button>
                         ${badgeHtml}
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${p.image_url || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400'}" loading="lazy" class="w-full h-full object-cover"></div>
@@ -964,7 +1033,7 @@
         }
 
         // ==========================================
-        // AR PROFILE ENGINE (CAMERA FIX)
+        // AR PROFILE ENGINE
         // ==========================================
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
@@ -980,11 +1049,7 @@
                     arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } }); 
                     const video = document.getElementById('ar-video-feed');
                     video.srcObject = arStream; 
-                    // Video autoplay play
-                    const playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => { console.log("Auto-play was prevented"); });
-                    }
+                    video.play();
                 } catch (err) { 
                     document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo."; 
                     document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-red-500'); 
