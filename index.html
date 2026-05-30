@@ -10,18 +10,43 @@
     <meta name="theme-color" content="#E8E8E8">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     
-    <!-- Fonts & Tailwind CSS -->
+    <!-- ORIGINAL PREMIUM FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    colors: { 'premium-bg': '#E8E8E8', 'premium-dark': '#111111', 'premium-muted': '#737373', 'premium-card': '#FFFFFF' },
-                    animation: { 'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
-                    keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'], 
+                        serif: ['Playfair Display', 'serif'], 
+                        brand: ['Cormorant Garamond', 'serif'] 
+                    },
+                    colors: { 
+                        'premium-bg': '#E8E8E8', 
+                        'premium-dark': '#111111', 
+                        'premium-muted': '#737373', 
+                        'premium-card': '#FFFFFF', 
+                        'accent-red': '#ef4444', 
+                        'accent-green': '#10b981' 
+                    },
+                    animation: { 
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: { 
+                        fadeInUp: { 
+                            '0%': { opacity: '0', transform: 'translateY(20px)' }, 
+                            '100%': { opacity: '1', transform: 'translateY(0)' } 
+                        },
+                        pulseGlow: { 
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.4)' }, 
+                            '50%': { boxShadow: '0 0 0 4px rgba(16, 185, 129, 0)' } 
+                        }
+                    }
                 }
             }
         }
@@ -48,57 +73,59 @@
         .drawer-slide { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .drawer-open { transform: translateX(0); }
         
+        /* Wishlist Heart Toggle */
+        .wishlist-active { fill: #ef4444; color: #ef4444; stroke: #ef4444; }
+        
         /* AR Scanner & Cinematic Studio CSS */
         @keyframes scan { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(300px); opacity: 1; } }
         .cinematic-35mm { filter: sepia(0.25) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg); }
         .film-grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.3; mix-blend-mode: overlay; z-index: 15; }
-        
-        /* Wishlist Heart Toggle */
-        .wishlist-active { fill: #ef4444; color: #ef4444; stroke: #ef4444; }
     </style>
 </head>
 <body class="antialiased pb-10 relative">
 
-    <!-- 1. TOAST NOTIFICATIONS -->
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- 2. MAIN NAVIGATION BAR -->
+    <!-- MAIN NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             
             <div class="flex-shrink-0 flex items-center space-x-4">
+                <!-- PREMIUM LOGO FIXED WITH BRAND FONT -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" class="h-10 md:h-12 hover:opacity-80 transition-opacity cursor-pointer" onclick="window.scrollTo(0,0)">
                   <defs>
-                    <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap'); .brand-title { font-family: 'Cormorant Garamond', serif; }</style>
                     <filter id="leafShadowInline" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22" /></filter>
                   </defs>
                   <g fill="#2B2118" opacity="0.15" filter="url(#leafShadowInline)" style="mix-blend-mode: multiply;">
                     <path d="M-100,500 C 150,300 250,100 400,-100 L 200,-100 C 100,100 0,300 -200,500 Z" />
                     <path d="M300,150 C 450,100 550,0 700,-100 C 500,-50 400,50 300,150 Z" />
                   </g>
-                  <text x="400" y="270" class="brand-title" font-size="160" font-weight="500" fill="#111111" text-anchor="middle" letter-spacing="-1">Aesthetica</text>
+                  <text x="400" y="270" font-family="'Cormorant Garamond', serif" font-size="160" font-weight="600" fill="#111111" text-anchor="middle" letter-spacing="-1">Aesthetica</text>
                 </svg>
                 
+                <!-- INTERACTIVE LOCATION -->
                 <div onclick="updateCity()" class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4 group cursor-pointer">
                     <span class="opacity-60 group-hover:opacity-100 transition-opacity">📍</span>
                     <span id="user-location" class="border-b border-premium-dark pb-0.5 group-hover:text-premium-muted transition-colors">Patna</span>
                 </div>
             </div>
             
-            <!-- Global Search & AI Lens -->
+            <!-- GLOBAL SEARCH & AI LENS -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
                 <input type="text" id="global-search-input" oninput="searchLiveFeed(this.value)" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
-                <button onclick="document.getElementById('ai-photo-search').click()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
+                <button onclick="document.getElementById('ai-photo-search').click()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors flex items-center gap-1">
+                    <span>✨</span> AI Lens
+                </button>
                 <input type="file" id="ai-photo-search" accept="image/*" class="hidden" onchange="triggerAISearch()">
             </div>
 
             <div class="flex items-center gap-4 md:gap-6">
-                <!-- PWA Install Button -->
                 <button id="install-btn" class="font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
 
-                <!-- NEW: Personalized User Menu -->
+                <!-- USER MENU & AUTH -->
                 <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleVaultModal()" class="hover:text-red-500 transition-colors border-b border-transparent hover:border-red-500 pb-0.5">My Vault ♥</button>
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">Orders</button>
@@ -108,13 +135,47 @@
                 
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
                 
-                <!-- CART BUTTON -->
                 <button onclick="toggleCartDrawer()" id="cart-counter-btn" class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
 
-    <!-- 2.5 CART DRAWER (SMART STACKING ADDED) -->
+    <!-- SECRET ADMIN DASHBOARD -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-[300] flex justify-center items-center p-4">
+        <div class="bg-gray-900 border border-gray-700 p-8 rounded-[4px] w-full max-w-4xl relative animate-fade-in-up shadow-2xl text-white">
+            <button onclick="document.getElementById('admin-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl transition-colors">✕</button>
+            <div class="flex items-center gap-3 mb-6 border-b border-gray-700 pb-4">
+                <span class="text-2xl">⚡</span>
+                <div>
+                    <h2 class="text-2xl font-serif text-white">Founder's Command Center</h2>
+                    <p class="text-[10px] text-green-400 uppercase tracking-widest font-mono">System Live • Supabase Connected</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-black/50 p-4 rounded border border-gray-700">
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block mb-1">Total Revenue</span>
+                    <span class="text-2xl font-serif">₹24,500</span>
+                </div>
+                <div class="bg-black/50 p-4 rounded border border-gray-700">
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block mb-1">Active P2P Rentals</span>
+                    <span class="text-2xl font-serif">12</span>
+                </div>
+                <div class="bg-black/50 p-4 rounded border border-gray-700">
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block mb-1">Platform Users</span>
+                    <span class="text-2xl font-serif">142</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-xs uppercase tracking-widest text-gray-400 border-b border-gray-700 pb-2 mb-3">Quick Actions</h3>
+                <button onclick="showToast('Database Sync Initiated', 'success')" class="bg-white text-black text-[10px] uppercase tracking-widest font-bold px-4 py-2 rounded-sm mr-2">Sync DB Inventory</button>
+                <button onclick="showToast('Test Push Notification Sent!', 'success')" class="border border-white text-white text-[10px] uppercase tracking-widest font-bold px-4 py-2 rounded-sm hover:bg-white hover:text-black transition">Broadcast Push Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
     <div id="cart-drawer-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] hidden opacity-0 transition-opacity duration-300">
         <div id="cart-drawer" class="absolute top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl flex flex-col drawer-slide">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
@@ -122,7 +183,7 @@
                 <button onclick="toggleCartDrawer()" class="text-gray-500 hover:text-black text-lg">✕</button>
             </div>
             <div id="cart-items-container" class="flex-grow p-6 overflow-y-auto space-y-4">
-                <p class="text-xs text-gray-400 text-center mt-10 uppercase tracking-widest">Cart is empty</p>
+                <!-- Cart items injected here -->
             </div>
             <div class="p-6 border-t border-gray-200 bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
@@ -134,7 +195,7 @@
         </div>
     </div>
 
-    <!-- 3. SECURE CHECKOUT MODAL -->
+    <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[160] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[4px] w-full max-w-sm relative animate-fade-in-up shadow-2xl">
             <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -158,31 +219,31 @@
         </div>
     </div>
 
-    <!-- 4. MY ORDERS MODAL -->
+    <!-- MY VAULT MODAL -->
+    <div id="vault-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
+            <button onclick="toggleVaultModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
+            <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">My Vault ♥</h2>
+            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Your curated wishlisted items</p>
+            <div id="vault-list-container" class="overflow-y-auto hide-scroll flex-grow mt-2 space-y-3 pr-2">
+                <!-- Vault items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MY ORDERS MODAL -->
     <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
             <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">Order History</h2>
-            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Track your aesthetic purchases & rentals</p>
-            <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-4 pr-2 mt-2">
+            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Track your aesthetic purchases</p>
+            <div id="orders-list-container" class="overflow-y-auto hide-scroll flex-grow mt-2 space-y-4 pr-2">
                 <p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>
             </div>
         </div>
     </div>
 
-    <!-- 4.5. MY VAULT (WISHLIST) MODAL -->
-    <div id="vault-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
-        <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
-            <button onclick="toggleVaultModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
-            <h2 class="text-2xl font-serif text-premium-dark mb-2 text-center">My Vault ♥</h2>
-            <p class="text-[10px] text-center text-gray-500 uppercase tracking-widest mb-6">Your curated wishlisted items</p>
-            <div id="vault-list-container" class="overflow-y-auto hide-scroll flex-grow space-y-3 pr-2 mt-2">
-                <p class="text-center text-xs text-gray-400 mt-6 uppercase tracking-widest">Vault is empty.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. AR PROFILE MODAL -->
+    <!-- AR PROFILE MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4">
         <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
@@ -257,7 +318,7 @@
         </div>
     </div>
 
-    <!-- 6. SECURE AUTHENTICATION MODAL -->
+    <!-- AUTHENTICATION MODAL -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up shadow-2xl">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -289,7 +350,7 @@
         </div>
     </div>
 
-    <!-- 7. PROMOTION BANNERS -->
+    <!-- PROMOTION BANNERS -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
             <div onclick="scrollToSection('feed-start')" class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
@@ -309,28 +370,31 @@
         </div>
     </div>
 
-    <!-- 8. MAIN CONTENT FEEDS -->
+    <!-- MAIN CONTENT FEEDS -->
     <main id="feed-start" class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
+        <!-- FEED FILTERS -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
             <button onclick="filterFeed('all')" class="category-btn text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</button>
             <button onclick="filterFeed('old-money')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</button>
-            <button onclick="filterFeed('watches')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Watches & Extras</button>
+            <button onclick="filterFeed('watches')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Watches & Boutiques</button>
             <button onclick="filterFeed('rentals')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Rentals & Bikes</button>
         </div>
 
-        <!-- NEW: NO RESULTS SEARCH STATE -->
+        <!-- NO RESULTS STATE -->
         <div id="empty-search-state" class="hidden text-center py-20 text-gray-400 text-xs uppercase tracking-widest font-medium border border-dashed border-gray-300 rounded-[2px]">
             No aesthetic matches found.
         </div>
 
         <div class="space-y-20" id="main-feed-container"> 
             
+            <!-- SECTION 1: OLD MONEY (CHEAPEST FINDS) -->
             <section class="feed-section" data-category="old-money">
                 <div class="flex justify-between items-end mb-6">
-                    <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
+                    <h2 class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Default Product 1 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Coffee Brown Linen Shirt">
                         <button onclick="toggleWishlist(this, 'Coffee Brown Linen Shirt')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -346,6 +410,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Default Product 2 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Vintage Leather Jacket">
                         <button onclick="toggleWishlist(this, 'Vintage Leather Jacket')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -364,11 +430,13 @@
                 </div>
             </section>
 
+            <!-- SECTION 2: WATCHES & BOUTIQUES -->
             <section class="feed-section" data-category="watches">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Default Product 3 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Premium Vine Kurta">
                         <button onclick="toggleWishlist(this, 'Premium Vine Kurta')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -384,6 +452,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Default Product 4 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Old Money Minimal Watch">
                         <button onclick="toggleWishlist(this, 'Old Money Minimal Watch')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -402,6 +472,7 @@
                 </div>
             </section>
 
+            <!-- SECTION 3: RENTALS (GARAGE) -->
             <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <div>
@@ -410,6 +481,7 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Default Product 5 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Royal Enfield Bullet 350">
                         <button onclick="toggleWishlist(this, 'Royal Enfield Bullet 350')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -426,6 +498,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Default Product 6 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Bajaj Dominar 400">
                         <button onclick="toggleWishlist(this, 'Bajaj Dominar 400')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -445,11 +519,13 @@
                 </div>
             </section>
 
+            <!-- SECTION 4: RENTALS (P2P PROPS) -->
             <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Default Product 7 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Continental GT 650">
                         <button onclick="toggleWishlist(this, 'Continental GT 650')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -460,7 +536,6 @@
                         <h3 class="text-sm font-medium text-premium-dark">Continental GT 650</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Lender: Rahul K. ★ 4.9</p>
                         
-                        <!-- FUNCTIONAL CO-RENT CLICK -->
                         <div onclick="initiateCoRent('Continental GT 650')" class="flex items-center space-x-1 mb-2 mt-1 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
                             <svg class="w-3 h-3 text-premium-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             <span class="text-[8px] font-bold text-premium-dark uppercase tracking-widest border-b border-dashed border-gray-400">Co-Rent (Split Cost)</span>
@@ -474,6 +549,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Default Product 8 -->
                     <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift relative" data-name="Leather Powerlifting Belt">
                         <button onclick="toggleWishlist(this, 'Leather Powerlifting Belt')" class="heart-btn absolute top-4 right-4 z-20 text-gray-300 hover:text-red-500 transition-colors bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -494,7 +571,7 @@
             </section>
         </div>
 
-        <!-- 10. CREATOR TOOLS -->
+        <!-- 12. CREATOR TOOLS -->
         <section id="creator-tools" class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -534,7 +611,7 @@
                 <div onclick="showToast('Your Affiliate Vault balance is ₹0')" class="bg-premium-dark text-white p-6 rounded-[2px] shadow-xl hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
-                        <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-1 block">Social Conversion Node</span>
                         <h3 class="text-lg font-serif mb-2">Aesthetic Bounties</h3>
                         <p class="text-[11px] text-gray-300 leading-relaxed">Monetize affiliate channels directly. Secure incoming commissions to vault.</p>
@@ -544,7 +621,7 @@
         </section>
     </main>
 
-    <!-- 11. PREMIUM FOOTER -->
+    <!-- 13. PREMIUM FOOTER WITH LEGAL LINKS -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -559,7 +636,7 @@
                 </ul>
             </div>
             <div>
-                <h3 class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark">Ecosystem Hub</h3>
+                <h3 id="admin-trigger" onclick="checkAdminTrigger()" class="text-xs uppercase tracking-widest font-bold mb-4 text-premium-dark cursor-pointer select-none">Ecosystem Hub</h3>
                 <a href="mailto:aestheticaworld@gmail.com" class="text-[11px] text-premium-muted hover:text-premium-dark transition cursor-pointer border-b border-transparent hover:border-premium-dark pb-0.5 inline-block">aestheticaworld@gmail.com</a>
                 <p class="text-[9px] text-gray-400 mt-2">Support & Business Inquiries</p>
             </div>
@@ -569,36 +646,39 @@
         </div>
     </footer>
 
-    <!-- LEGAL MODALS -->
+    <!-- LEGAL MODAL 1: PRIVACY ARCHITECTURE -->
     <div id="privacy-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
             <button onclick="togglePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-serif text-premium-dark mb-1">Privacy Architecture</h2>
             <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Data Vault & Security Protocols</p>
             <div class="overflow-y-auto hide-scroll flex-grow pr-2 text-[11px] text-premium-muted space-y-4 leading-relaxed">
-                <p><strong class="text-premium-dark">1. AR Processing & Biometrics:</strong> The AR Drape & Fit engine utilizes local browser APIs. Your camera feed is processed strictly on your device. We do not transmit, record, or store any facial recognition data.</p>
-                <p><strong class="text-premium-dark">2. Supabase Encryption:</strong> User dimensions, aesthetic preferences, and order histories are stored in our decentralized Supabase architecture. All data is protected via Row Level Security (RLS).</p>
+                <p><strong class="text-premium-dark">1. AR Processing & Biometrics:</strong> The AR Drape & Fit engine utilizes local browser APIs (WebRTC). Your camera feed is processed strictly on your device. We do not transmit, record, or store any facial recognition data or live video streams on our servers.</p>
+                <p><strong class="text-premium-dark">2. Supabase Encryption:</strong> User dimensions, aesthetic preferences, and order histories are stored in our decentralized Supabase architecture. All data is protected via Row Level Security (RLS), meaning no external entity can query your profile matrix.</p>
                 <p><strong class="text-premium-dark">3. Payment Gateway:</strong> We use Razorpay for secure checkout. Aesthetica does not log, process, or store credit card numbers or UPI PINs. All financial nodes are AES-256 encrypted end-to-end.</p>
+                <p><strong class="text-premium-dark">4. Affiliate Analytics:</strong> Interaction with "Cheapest Finds" via external links may drop anonymous tracking cookies strictly to attribute creator bounties. No personal identity is attached to these outbound clicks.</p>
             </div>
             <button onclick="togglePrivacyModal()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-bold py-3 mt-6 rounded-sm hover:bg-gray-800 transition">Acknowledge</button>
         </div>
     </div>
 
+    <!-- LEGAL MODAL 2: TERMS OF SERVICE -->
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[80vh] flex flex-col shadow-2xl">
             <button onclick="toggleTermsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <h2 class="text-2xl font-serif text-premium-dark mb-1">Terms of Service</h2>
             <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-6 border-b border-gray-200 pb-4">Platform Guidelines & Liabilities</p>
             <div class="overflow-y-auto hide-scroll flex-grow pr-2 text-[11px] text-premium-muted space-y-4 leading-relaxed">
-                <p><strong class="text-premium-dark">1. P2P Rental Agreement:</strong> The "Creator Garage" acts solely as a discovery node. The lender and borrower assume total mutual liability for physical damage, insurance, and late returns.</p>
-                <p><strong class="text-premium-dark">2. Affiliate Purchases:</strong> Items marked as "Affiliate Buy" redirect to third-party marketplaces. Aesthetica is not liable for shipping delays or quality control of external vendors.</p>
-                <p><strong class="text-premium-dark">3. Account Termination:</strong> We reserve the right to suspend any AR Profile or Vault access if fraudulent checkout attempts or community violations are detected by our automated systems.</p>
+                <p><strong class="text-premium-dark">1. P2P Rental Agreement:</strong> The "Creator Garage" and "Rentals" sections operate on a peer-to-peer (P2P) model. Aesthetica acts solely as a discovery node. The lender and borrower assume total mutual liability for physical damage, insurance, and late returns.</p>
+                <p><strong class="text-premium-dark">2. Affiliate Purchases:</strong> Items marked as "Affiliate Buy" redirect to third-party marketplaces (e.g., Amazon, Myntra). Aesthetica is not liable for shipping delays, return policies, or quality control of external vendors.</p>
+                <p><strong class="text-premium-dark">3. Creator Bounties:</strong> Payouts generated through the "Social Conversion Node" are calculated on a 30-day net verification cycle to prevent fraud. Minimum withdrawal limit applies.</p>
+                <p><strong class="text-premium-dark">4. Account Termination:</strong> We reserve the right to suspend any AR Profile or Vault access if fraudulent checkout attempts, fake rental listings, or community violations are detected by our automated systems.</p>
             </div>
             <button onclick="toggleTermsModal()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-bold py-3 mt-6 rounded-sm hover:bg-gray-800 transition">Accept Terms</button>
         </div>
     </div>
 
-    <!-- 12. SUPABASE & APP LOGIC SCRIPT -->
+    <!-- 14. SUPABASE & APP LOGIC SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Supabase DB Connection
@@ -614,15 +694,39 @@
         // Persistent Memory States
         let cartItems = JSON.parse(localStorage.getItem('aesthetica_cart')) || [];
         let wishlistItems = JSON.parse(localStorage.getItem('aesthetica_wishlist')) || [];
+        let adminClicks = 0;
 
-        // PWA Registration
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Failed:', err)); }); }
+        // PWA Registration & Push Notifications
+        if ('serviceWorker' in navigator) { 
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Failed:', err)); 
+            }); 
+        }
+        
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
         document.getElementById('install-btn').addEventListener('click', async () => {
             if(deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; deferredPrompt = null; } 
             else { showToast("To install: Use your browser's 'Add to Home Screen' menu ✨"); }
         });
+
+        function requestPushPermissions() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if(permission === 'granted') console.log("Push notifications enabled");
+                });
+            }
+        }
+
+        // Admin Trigger
+        function checkAdminTrigger() {
+            adminClicks++;
+            if(adminClicks >= 5) {
+                document.getElementById('admin-modal').classList.remove('hidden');
+                adminClicks = 0;
+            }
+            setTimeout(() => { adminClicks = 0; }, 2000);
+        }
 
         // UI Helpers
         function showToast(message, type = "success") {
@@ -652,9 +756,7 @@
             showToast("Split-cost link copied to clipboard! Share it with your co-renter. 🤝");
         }
 
-        // ==========================================
-        // SMART WISHLIST VAULT
-        // ==========================================
+        // Smart Wishlist Vault
         function initWishlistUI() {
             document.querySelectorAll('.product-card').forEach(card => {
                 const name = card.getAttribute('data-name');
@@ -697,9 +799,7 @@
             }
         }
 
-        // ==========================================
-        // SMART CART STACKING
-        // ==========================================
+        // Smart Cart Engine
         function toggleCartDrawer() {
             const overlay = document.getElementById('cart-drawer-overlay');
             const drawer = document.getElementById('cart-drawer');
@@ -750,9 +850,7 @@
             initiateCheckout(`Cart Bundle (${cartItems.length} styles)`, grandTotal, 'Cart Purchase');
         }
 
-        // ==========================================
-        // SMART SEARCH ENGINE WITH EMPTY STATE
-        // ==========================================
+        // Smart Search Engine
         function searchLiveFeed(query) {
             const q = query.toLowerCase();
             const products = document.querySelectorAll('.product-card');
@@ -767,7 +865,7 @@
             else document.getElementById('empty-search-state').classList.add('hidden');
         }
 
-        // Filters & AI Search
+        // Filters
         function filterFeed(category) {
             const sections = document.querySelectorAll('.feed-section');
             const btns = document.querySelectorAll('.category-btn');
@@ -775,16 +873,32 @@
             event.target.classList.add('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1');
             sections.forEach(sec => { if (category === 'all' || sec.getAttribute('data-category') === category) sec.style.display = 'block'; else sec.style.display = 'none'; });
         }
-        function triggerAISearch() {
+
+        // AI Lens Mock
+        async function triggerAISearch() {
             const input = document.getElementById('ai-photo-search');
             if(input.files && input.files[0]) {
-                showToast("Scanning aesthetics...", "success");
-                setTimeout(() => showToast("Searching database for matches...", "success"), 1500);
-                setTimeout(() => { showToast("No exact matches found yet.", "error"); input.value = ''; }, 3500);
+                showToast("AI Vision scanning image aesthetics...", "success");
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onloadend = async function() {
+                    const GEMINI_API_KEY = ''; // Add Google Gemini API Key here
+                    if(!GEMINI_API_KEY || GEMINI_API_KEY === '') {
+                        setTimeout(() => showToast("Developer Mode: Gemini Key required.", "error"), 2000);
+                        setTimeout(() => {
+                            document.getElementById('global-search-input').value = "vintage leather";
+                            searchLiveFeed("vintage leather");
+                            showToast("AI detected: Vintage Leather Aesthetic", "success");
+                        }, 2500);
+                        return;
+                    }
+                    // Actual API Call would go here
+                }
+                reader.readAsDataURL(file);
             }
         }
 
-        // Modals Toggles
+        // Modals Toggles (Including Legal)
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
@@ -801,7 +915,7 @@
         function togglePrivacyModal() { document.getElementById('privacy-modal').classList.toggle('hidden'); }
         function toggleTermsModal() { document.getElementById('terms-modal').classList.toggle('hidden'); }
 
-        // Checkout
+        // Checkout Engine
         function initiateCheckout(productName, price, type) {
             if (!currentUser) { toggleAuthModal(); return showToast("Login required to purchase"); }
             currentOrderPayload = { name: productName, price: price, type: type };
@@ -810,6 +924,7 @@
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
+        
         async function processPayment() {
             const btn = document.getElementById('pay-btn');
             const originalText = btn.innerText;
@@ -822,7 +937,7 @@
             }, 1500);
         }
 
-        // DB Data
+        // Database Orders
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
             container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>';
@@ -838,6 +953,7 @@
             }
         }
         
+        // Supabase Live Feed Data
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
@@ -864,11 +980,11 @@
                         </div></div>`;
                     if(p.is_local) localContainer.innerHTML += card; else cheapContainer.innerHTML += card;
                 });
-                initWishlistUI(); // Set heart states for new elements
+                initWishlistUI(); 
             }
         }
 
-        // AR Studio
+        // AR Profile Engine
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
             const modal = document.getElementById('profile-modal');
@@ -892,7 +1008,7 @@
             if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape."; else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic."; else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
-        // Auth
+        // Authentication Engine
         async function handleAuth() {
             const email = document.getElementById('email-input').value; const password = document.getElementById('password-input').value;
             if(!email || !password) return showToast("Enter credentials", "error");
@@ -910,16 +1026,17 @@
             if(session) {
                 currentUser = session.user; 
                 
-                // PERSONALIZED WELCOME UPDATE
                 const namePrefix = currentUser.email.split('@')[0];
                 const authBtn = document.getElementById('auth-btn');
                 authBtn.innerText = `Hi, ${namePrefix}`;
-                authBtn.onclick = null; // Remove modal popup since logged in
+                authBtn.onclick = null; 
                 authBtn.classList.remove('bg-premium-dark', 'text-white');
                 authBtn.classList.add('bg-gray-100', 'text-premium-dark', 'pointer-events-none');
                 
                 document.getElementById('user-menu').classList.remove('hidden'); 
                 document.getElementById('user-menu').classList.add('flex');
+                
+                setTimeout(requestPushPermissions, 2000);
                 
                 const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
                 if (data) {
@@ -937,7 +1054,7 @@
             else { showToast("Matrix Locked & Feed Updated!"); setTimeout(() => location.reload(), 1000); }
         }
 
-        // Boot
+        // Boot Init
         updateCartUI();
         initWishlistUI();
         checkSession(); 
