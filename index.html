@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#FAFAFA">
+    <meta name="description" content="Aesthetica - The Ultimate Luxury & Viral Affiliate Platform">
     <title>Aesthetica | Luxury Affiliate Super-App</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,700&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -34,34 +34,22 @@
                         'luxury-gray': '#F3F4F6'
                     },
                     animation: { 
-                        'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in-up': 'fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'marquee': 'marquee 30s linear infinite',
                         'scan-line': 'scanLine 2.5s ease-in-out infinite',
-                        'marquee': 'marquee 35s linear infinite',
-                        'camera-flash': 'cameraFlash 0.4s ease-out forwards'
+                        'camera-flash': 'cameraFlash 0.4s ease-out forwards',
+                        'bounce-float': 'bounceFloat 4s ease-in-out infinite',
+                        'progress-fill': 'progressFill 3.5s ease-in-out forwards'
                     },
                     keyframes: { 
-                        fadeIn: { 
-                            '0%': { opacity: '0' }, 
-                            '100%': { opacity: '1' } 
-                        },
-                        fadeInUp: { 
-                            '0%': { opacity: '0', transform: 'translateY(25px)' }, 
-                            '100%': { opacity: '1', transform: 'translateY(0)' } 
-                        },
-                        scanLine: { 
-                            '0%': { transform: 'translateY(0)', opacity: '1' }, 
-                            '50%': { opacity: '0.6' }, 
-                            '100%': { transform: 'translateY(100%)', opacity: '1' } 
-                        },
-                        marquee: { 
-                            '0%': { transform: 'translateX(0%)' }, 
-                            '100%': { transform: 'translateX(-50%)' } 
-                        },
-                        cameraFlash: { 
-                            '0%': { opacity: '1', backgroundColor: '#ffffff' }, 
-                            '100%': { opacity: '0', backgroundColor: 'transparent' } 
-                        }
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        marquee: { '0%': { transform: 'translateX(0%)' }, '100%': { transform: 'translateX(-50%)' } },
+                        scanLine: { '0%': { transform: 'translateY(0)', opacity: '1' }, '50%': { opacity: '0.6' }, '100%': { transform: 'translateY(100%)', opacity: '1' } },
+                        cameraFlash: { '0%': { opacity: '1', backgroundColor: '#fff' }, '100%': { opacity: '0', backgroundColor: 'transparent' } },
+                        bounceFloat: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        progressFill: { '0%': { width: '0%' }, '100%': { width: '100%' } }
                     }
                 }
             }
@@ -69,22 +57,19 @@
     </script>
     
     <style>
-        /* Base spacious resets */
+        /* Base Resets */
         body { 
             background-color: #FAFAFA; 
             color: #0A0A0A; 
-            overflow-x: hidden; 
-            scroll-behavior: smooth; 
+            transition: all 0.4s ease; 
             -webkit-tap-highlight-color: transparent; 
-            transition: background-color 0.5s ease, color 0.5s ease; 
             margin: 0; 
-            padding: 0; 
+            overflow-x: hidden;
         }
-        
-        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll::-webkit-scrollbar { display: none; } 
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Day 1 Premium Logo Font */
+        /* Day 1 Aesthetica Brand Font */
         .logo-font { 
             font-family: 'Cormorant Garamond', serif; 
             font-style: italic; 
@@ -94,9 +79,8 @@
         
         /* Premium Card Interactions */
         .hover-lift { 
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
-            transform-style: preserve-3d; 
-            will-change: transform; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform-style: preserve-3d;
         }
         .hover-lift:hover { 
             transform: translateY(-8px); 
@@ -104,164 +88,89 @@
             z-index: 10; 
         }
         
-        .img-zoom { 
-            overflow: hidden; 
-            position: relative; 
-            border-radius: 4px; 
-        }
-        .img-zoom img { 
-            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); 
-            will-change: transform; 
-        }
-        .img-zoom:hover img { 
-            transform: scale(1.08); 
-        }
-        
-        /* UI Drawers */
-        .drawer-slide { 
-            transform: translateX(100%); 
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            will-change: transform; 
-        }
-        .drawer-open { 
-            transform: translateX(0); 
-        }
-        
-        .wishlist-active { 
-            fill: #FF2A2A !important; 
-            color: #FF2A2A !important; 
-            stroke: #FF2A2A !important; 
-            transition: all 0.3s ease; 
-        }
+        /* Image Zoom Architecture */
+        .img-zoom { overflow: hidden; border-radius: 4px; }
+        .img-zoom img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .img-zoom:hover img { transform: scale(1.08); }
 
+        /* UI Drawer Animation */
+        .drawer-slide { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .drawer-open { transform: translateX(0); }
+        
+        /* Active States */
+        .wishlist-active { fill: #FF2A2A !important; color: #FF2A2A !important; stroke: #FF2A2A !important; }
+
+        /* Toast Engine */
         .toast-enter { transform: translateY(150%); opacity: 0; }
-        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .toast-leave-active { transform: translateY(150%); opacity: 0; transition: all 0.4s ease-in; }
-        
-        /* 🌙 OLED MODE OVERRIDES */
-        body.dark-theme { 
-            background-color: #000000 !important; 
-            color: #FFFFFF !important; 
-        }
-        body.dark-theme nav, 
-        body.dark-theme .marquee-container { 
-            background-color: rgba(5, 5, 5, 0.98) !important; 
-            border-color: #222222 !important; 
-        }
-        body.dark-theme .bg-white { 
-            background-color: #0F0F0F !important; 
-            color: #FFFFFF !important; 
-            border-color: #222222 !important; 
-        }
-        body.dark-theme .bg-premium-card { 
-            background-color: #0A0A0A !important; 
-            border-color: #1A1A1A !important; 
-            box-shadow: 0 4px 15px rgba(255,255,255,0.02); 
-        }
-        body.dark-theme .text-premium-dark { color: #FFFFFF !important; }
-        body.dark-theme .border-premium-dark { border-color: #FFFFFF !important; }
-        body.dark-theme .bg-premium-dark { background-color: #FFFFFF !important; color: #000000 !important; }
-        body.dark-theme .text-premium-muted { color: #888888 !important; }
-        body.dark-theme .bg-gray-50 { background-color: #111111 !important; }
+        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.4s ease-out; }
+        .toast-leave-active { transform: translateY(150%); opacity: 0; transition: all 0.3s ease-in; }
 
-        /* ⚡ GEN-Z VIRAL MODE (SPOYL BRUTALISM) */
-        body.genz-mode { 
-            background-color: #050505 !important; 
-            color: #FFFFFF !important; 
-            font-family: 'Inter', sans-serif !important; 
-        }
-        body.genz-mode nav, 
-        body.genz-mode .marquee-container { 
-            background-color: #050505 !important; 
-            border-bottom: 2px solid #222 !important; 
-        }
-        body.genz-mode h1, 
-        body.genz-mode h2, 
-        body.genz-mode h3, 
-        body.genz-mode .font-serif { 
-            font-family: 'Space Grotesk', sans-serif !important; 
-            text-transform: uppercase; 
-            font-weight: 900; 
-            letter-spacing: -0.05em; 
-        }
-        
-        body.genz-mode .product-card { 
-            background-color: #111111 !important; 
-            border: 2px solid #DFFF00 !important; 
-            border-radius: 0 !important; 
-            box-shadow: 6px 6px 0px #DFFF00 !important; 
-            transition: all 0.2s ease; 
-        }
-        body.genz-mode .product-card:hover { 
-            transform: translate(-5px, -5px) !important; 
-            box-shadow: 12px 12px 0px #DFFF00 !important; 
-        }
-        
-        body.genz-mode .bg-white { background-color: #111111 !important; color: #FFFFFF !important; }
-        body.genz-mode .text-premium-dark { color: #FFFFFF !important; }
-        body.genz-mode .bg-premium-dark { background-color: #DFFF00 !important; color: #000000 !important; font-weight: 900 !important; border-radius: 0 !important; }
-        body.genz-mode .bg-gray-50 { background-color: #1A1A1A !important; }
-        body.genz-mode .border-premium-dark { border-color: #DFFF00 !important; color: #DFFF00 !important; }
-        body.genz-mode .heart-btn { color: #DFFF00 !important; }
-        body.genz-mode .category-btn { border-color: transparent !important; color: #666666 !important; font-family: 'Space Grotesk', sans-serif !important; text-transform: uppercase; font-weight: 700; }
-        body.genz-mode .category-btn.active-filter { color: #DFFF00 !important; border-bottom: 2px solid #DFFF00 !important; }
+        /* ------------------------------------------- */
+        /* 🌙 MIDNIGHT OLED LUXURY MODE                */
+        /* ------------------------------------------- */
+        body.dark-theme { background-color: #000000 !important; color: #FFFFFF !important; }
+        body.dark-theme nav { background-color: rgba(5,5,5,0.95)!important; border-color: #222!important; }
+        body.dark-theme .bg-white { background-color: #111111!important; border-color: #222!important; color: #FFFFFF!important; }
+        body.dark-theme .text-premium-dark { color: #FFFFFF!important; }
+        body.dark-theme .bg-gray-50 { background-color: #1A1A1A!important; }
+        body.dark-theme .border-premium-dark { border-color: #FFFFFF!important; }
+        body.dark-theme .bg-premium-dark { background-color: #FFFFFF!important; color: #000!important; }
 
-        /* Marquee Strip */
+        /* ------------------------------------------- */
+        /* ⚡ GEN-Z VIRAL MODE (SPOYL BRUTALISM)       */
+        /* ------------------------------------------- */
+        body.genz-mode { background-color: #050505 !important; color: #FFFFFF !important; font-family: 'Inter', sans-serif !important; }
+        body.genz-mode nav { background-color: #050505!important; border-bottom: 2px solid #222!important; }
+        body.genz-mode h1, body.genz-mode h2, body.genz-mode h3 { font-family: 'Space Grotesk', sans-serif !important; text-transform: uppercase; font-weight: 900; letter-spacing: -0.05em; }
+        body.genz-mode .product-card { background-color: #111!important; border: 2px solid #DFFF00!important; border-radius: 0!important; box-shadow: 6px 6px 0px #DFFF00!important; transition: all 0.2s; }
+        body.genz-mode .product-card:hover { transform: translate(-4px, -4px)!important; box-shadow: 12px 12px 0px #DFFF00!important; }
+        body.genz-mode .bg-white { background-color: #111!important; color: #FFF!important; border-color: #333!important; }
+        body.genz-mode .text-premium-dark { color: #FFF!important; }
+        body.genz-mode .bg-premium-dark { background-color: #DFFF00!important; color: #000!important; font-weight: 900!important; border-radius: 0!important; }
+        body.genz-mode .category-btn { color: #666!important; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; font-weight: 700; border-color: transparent!important; }
+        body.genz-mode .category-btn.active-filter { color: #DFFF00!important; border-bottom: 2px solid #DFFF00!important; }
+
+        /* ------------------------------------------- */
+        /* BUG FIX: CLEAN LIGHT MARQUEE BANNER         */
+        /* ------------------------------------------- */
         .marquee-container { 
             width: 100%; 
             overflow: hidden; 
             white-space: nowrap; 
-            display: flex; 
-            align-items: center; 
-            background: #0A0A0A; 
+            background: #FAFAFA; /* Light gray instead of Black */
             padding: 12px 0; 
-            border-bottom: 1px solid #222; 
+            border-bottom: 1px solid #EAEAEA; 
             position: relative; 
             z-index: 40; 
         }
-        .marquee-content { 
-            display: inline-block; 
-            white-space: nowrap; 
-            padding-left: 100%; 
-            animation: marquee 35s linear infinite; 
-        }
-        .marquee-item { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 2rem; 
-            color: #FFFFFF; 
-            font-family: 'Inter', sans-serif; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            font-size: 0.85rem; 
-            letter-spacing: 0.15em; 
-            padding: 0 3rem; 
-        }
-        .marquee-item span { color: #D4AF37; }
-        body.genz-mode .marquee-item span { color: #DFFF00; font-family: 'Space Grotesk', sans-serif; }
-
-        /* Auto-Scrolling Flipkart Banner Container */
-        .carousel-container { 
-            scroll-snap-type: x mandatory; 
-            scroll-behavior: smooth; 
-            -webkit-overflow-scrolling: touch; 
-        }
-        .carousel-item { 
-            scroll-snap-align: center; 
-            flex: 0 0 auto; 
-        }
-
-        /* Avatar & Size Chips */
-        .avatar-layer { background-size: contain; background-position: center; background-repeat: no-repeat; transition: background-image 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s; }
-        #moodboard-canvas { background-image: radial-gradient(#333333 1px, transparent 1px); background-size: 20px 20px; }
+        body.dark-theme .marquee-container { background: #0A0A0A; border-color: #222; }
+        body.genz-mode .marquee-container { background: #050505; border-color: #222; }
         
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite; }
+        .marquee-item { display: inline-flex; gap: 2.5rem; color: #0A0A0A; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.15em; padding: 0 3rem; text-transform: uppercase;}
+        body.dark-theme .marquee-item { color: #FFF; }
+        body.genz-mode .marquee-item { color: #FFF; font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Highlight specific words in marquee */
+        .marquee-item span { color: #D4AF37; }
+        body.genz-mode .marquee-item span { color: #DFFF00; }
+
+        /* Carousel Auto-Scroll Framework */
+        .carousel-container { scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .carousel-item { scroll-snap-align: center; flex: 0 0 auto; }
+        
+        /* Size Chips */
         .size-chip { transition: all 0.3s ease; }
-        .size-chip:hover { border-color: #0A0A0A; background-color: #0A0A0A; color: #FFFFFF; }
-        body.dark-theme .size-chip:hover { border-color: #D4AF37; background-color: #D4AF37; color: #000000; }
-        body.genz-mode .size-chip:hover { border-color: #DFFF00; background-color: #DFFF00; color: #000000; }
+        .size-chip:hover { border-color: #0A0A0A; background-color: #0A0A0A; color: #FFF; }
+        body.dark-theme .size-chip:hover { border-color: #D4AF37; background-color: #D4AF37; color: #000; }
+        body.genz-mode .size-chip:hover { border-color: #DFFF00; background-color: #DFFF00; color: #000; }
+
+        /* Avatar Canvas Layers */
+        .avatar-layer { background-size: contain; background-position: center; background-repeat: no-repeat; transition: background-image 0.5s, opacity 0.3s; }
+        #moodboard-canvas { background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; }
     </style>
 </head>
-<body class="antialiased pb-12 relative">
+<body class="antialiased pb-16 relative pt-0">
 
     <input type="file" id="global-ai-photo-upload" accept="image/*" class="hidden" onchange="window.fallbackAILensUpload(event)">
     <input type="file" id="avatar-gallery-upload" accept="image/*" class="hidden" onchange="window.processAvatarGalleryUpload(event)">
@@ -269,8 +178,24 @@
     
     <div id="toast-container" class="fixed bottom-10 right-6 z-[9999] flex flex-col gap-4 pointer-events-none"></div>
 
+    <div id="floating-promo-banner" class="fixed bottom-6 left-6 md:left-10 z-[90] w-[90%] max-w-[340px] bg-white dark:bg-black text-premium-dark dark:text-white rounded-[6px] shadow-2xl border-2 border-premium-dark dark:border-gray-700 p-2.5 flex items-center justify-between animate-bounce-float cursor-pointer hover:scale-[1.02] transition-transform" onclick="window.scrollTo(0, document.body.scrollHeight);">
+        <div class="flex items-center gap-4 pl-2">
+            <div class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-[12px] md:text-[13px] uppercase font-extrabold tracking-[0.1em] leading-tight text-blue-600 dark:text-blue-400 font-serif">Summer Collection '26</span>
+                <span class="text-[9px] text-gray-500 uppercase tracking-[0.2em] font-bold mt-0.5">Up to 60% Off Trending Fits</span>
+            </div>
+        </div>
+        <button onclick="event.stopPropagation(); document.getElementById('floating-promo-banner').style.display='none'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
     <nav id="main-nav" class="bg-white/95 backdrop-blur-2xl sticky top-0 z-50 border-b border-gray-200 transition-colors duration-500 shadow-sm">
-        <div class="max-w-[1500px] mx-auto px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="max-w-[1500px] mx-auto px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-6">
             
             <div class="flex-shrink-0 flex items-center">
                 <h1 class="logo-font text-4xl md:text-5xl text-premium-dark cursor-pointer transition-opacity hover:opacity-70" onclick="window.scrollTo(0,0)">
@@ -284,23 +209,23 @@
                 </div>
                 <input type="text" id="desktop-search-input" oninput="window.searchLiveFeed(this.value)" placeholder="SEARCH THE ARCHIVE..." class="w-full bg-transparent py-3.5 px-5 text-[11px] font-extrabold uppercase tracking-[0.2em] focus:outline-none text-premium-dark placeholder-gray-500">
                 <button onclick="window.toggleAILensScanner()" class="text-[10px] uppercase tracking-[0.3em] font-extrabold text-premium-dark px-6 py-3.5 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors border-l border-gray-300 dark:border-gray-800 flex items-center gap-2 bg-gray-50 dark:bg-[#1a1a1a]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg> 
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
                     <span class="hidden lg:inline">LENS</span>
                 </button>
             </div>
 
             <div class="hidden lg:flex order-2 md:order-3 items-center justify-center gap-8 text-[11px] font-extrabold uppercase tracking-[0.25em] text-premium-dark flex-grow">
                 <button onclick="window.startAvatarCreation()" class="hover:text-accent-gold transition-colors flex items-center gap-2">
-                    <span class="text-sm">👤</span> AVATAR
+                    <span class="text-lg">👤</span> AVATAR
                 </button>
                 <button onclick="window.toggleProfileModal()" class="hover:text-accent-gold transition-colors flex items-center gap-2">
-                    <span class="text-sm">📐</span> AR FIT
+                    <span class="text-lg">📐</span> AR FIT
                 </button>
                 <button onclick="window.toggleVaultModal()" class="hover:text-red-500 transition-colors flex items-center gap-2">
-                    <span class="text-sm text-red-500">♥</span> VAULT
+                    <span class="text-lg text-red-500">♥</span> VAULT
                 </button>
                 <button onclick="window.toggleDarkMode()" class="hover:text-purple-500 transition-colors flex items-center gap-2">
-                    <span class="text-sm">🌙</span> OLED
+                    <span class="text-lg">🌙</span> OLED
                 </button>
             </div>
 
@@ -326,7 +251,7 @@
                 <div class="pl-4 text-gray-400">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
-                <input type="text" id="mobile-search-input" oninput="window.searchLiveFeed(this.value)" placeholder="SEARCH ARCHIVES..." class="w-full bg-transparent py-3.5 px-4 text-[10px] font-extrabold uppercase tracking-widest focus:outline-none">
+                <input type="text" id="mobile-search-input" oninput="window.searchLiveFeed(this.value)" placeholder="SEARCH ARCHIVES..." class="w-full bg-transparent py-3.5 px-4 text-[10px] font-extrabold uppercase tracking-widest focus:outline-none text-premium-dark">
                 <button onclick="window.toggleAILensScanner()" class="text-[10px] uppercase tracking-widest font-extrabold text-premium-dark px-5 py-3.5 bg-gray-200 dark:bg-gray-800 transition-colors border-l border-gray-300 dark:border-gray-700">LENS</button>
             </div>
         </div>
@@ -335,15 +260,65 @@
     <div class="marquee-container shadow-md">
         <div class="marquee-content">
             <div class="marquee-item">⚡ <span>NEW VIRAL DROPS ADDED</span></div>
-            <div class="marquee-item">☀️ <span style="color:#FFFFFF;">SUMMER COLLECTION LIVE</span></div>
+            <div class="marquee-item">☀️ <span>SUMMER COLLECTION LIVE</span></div>
             <div class="marquee-item">⌚ <span>OLD MONEY WATCHES RESTOCKED</span></div>
-            <div class="marquee-item">👟 <span style="color:#FFFFFF;">STREETWEAR SNEAKERS 50% OFF</span></div>
+            <div class="marquee-item">👟 <span>STREETWEAR SNEAKERS 50% OFF</span></div>
             <div class="marquee-item">✨ <span>FREE SHIPPING ON ALL ORDERS</span></div>
             <div class="marquee-item">⚡ <span>NEW VIRAL DROPS ADDED</span></div>
-            <div class="marquee-item">☀️ <span style="color:#FFFFFF;">SUMMER COLLECTION LIVE</span></div>
+            <div class="marquee-item">☀️ <span>SUMMER COLLECTION LIVE</span></div>
             <div class="marquee-item">⌚ <span>OLD MONEY WATCHES RESTOCKED</span></div>
-            <div class="marquee-item">👟 <span style="color:#FFFFFF;">STREETWEAR SNEAKERS 50% OFF</span></div>
-            <div class="marquee-item">✨ <span>FREE SHIPPING ON ALL ORDERS</span></div>
+            <div class="marquee-item">👟 <span>STREETWEAR SNEAKERS 50% OFF</span></div>
+        </div>
+    </div>
+
+    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 transition-opacity duration-300">
+        <div id="mobile-menu-drawer" class="absolute top-0 right-0 h-full w-[85%] max-w-sm bg-white dark:bg-[#0A0A0A] shadow-2xl flex flex-col drawer-slide overflow-hidden border-l border-gray-200 dark:border-gray-800">
+            
+            <div class="px-8 py-12 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#111]">
+                <div class="flex justify-between items-start mb-8">
+                    <div class="w-20 h-20 bg-premium-dark dark:bg-white rounded-full flex items-center justify-center text-white dark:text-black shadow-xl">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                    <button onclick="window.toggleMobileMenu()" class="text-gray-400 hover:text-red-500 text-4xl transition-colors">✕</button>
+                </div>
+                <h3 id="mobile-user-name" class="text-4xl font-serif text-premium-dark font-bold tracking-wide">Guest User</h3>
+                <p id="mobile-user-status" class="text-[11px] uppercase tracking-[0.3em] text-gray-500 mt-3 font-bold">Not Authenticated</p>
+            </div>
+
+            <div class="flex-grow overflow-y-auto hide-scroll py-8 px-6 space-y-4">
+                
+                <button id="mobile-auth-btn" onclick="window.toggleAuthModal(); window.toggleMobileMenu();" class="w-full flex items-center justify-between px-6 py-5 rounded-[4px] hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors border border-gray-200 dark:border-gray-800 shadow-sm">
+                    <span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">Sign In / Register</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                
+                <button onclick="window.toggleOrdersModal(); window.toggleMobileMenu();" class="w-full flex items-center justify-between px-6 py-5 rounded-[4px] hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors border border-gray-200 dark:border-gray-800 shadow-sm">
+                    <span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">My Orders Archive</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+
+                <div class="border-t border-gray-100 dark:border-gray-800 my-6"></div>
+                
+                <button onclick="window.startAvatarCreation(); window.toggleMobileMenu();" class="w-full flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left rounded-[4px]">
+                    <div class="flex items-center gap-5"><span class="text-2xl">👤</span><span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">Avatar Studio</span></div>
+                </button>
+                <button onclick="window.toggleProfileModal(); window.toggleMobileMenu();" class="w-full flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left rounded-[4px]">
+                    <div class="flex items-center gap-5"><span class="text-2xl">📐</span><span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">AR Fit Setup</span></div>
+                </button>
+                <button onclick="window.toggleMoodboard(); window.toggleMobileMenu();" class="w-full flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left rounded-[4px]">
+                    <div class="flex items-center gap-5"><span class="text-2xl">🎨</span><span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">Creator Canvas</span></div>
+                </button>
+                <button onclick="window.toggleVaultModal(); window.toggleMobileMenu();" class="w-full flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left rounded-[4px]">
+                    <div class="flex items-center gap-5"><span class="text-2xl text-red-500">♥</span><span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">My Vault</span></div>
+                </button>
+                <button onclick="window.toggleDarkMode(); window.toggleMobileMenu();" class="w-full flex items-center px-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left rounded-[4px]">
+                    <div class="flex items-center gap-5"><span class="text-2xl">🌙</span><span class="text-[13px] uppercase tracking-widest font-extrabold text-premium-dark">OLED Mode</span></div>
+                </button>
+            </div>
+            
+            <div class="p-8 border-t border-gray-100 dark:border-gray-800">
+                <button id="mobile-logout-btn" onclick="window.handleLogout()" class="hidden w-full text-red-500 text-[12px] uppercase tracking-[0.2em] font-bold py-4 border-2 border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-[4px]">Disconnect Session</button>
+            </div>
         </div>
     </div>
 
@@ -388,7 +363,7 @@
             <button onclick="window.filterFeed('watches')" id="filter-watches" class="category-btn hover:text-premium-dark pb-2 border-b-2 border-transparent transition-all whitespace-nowrap snap-start">Watches</button>
             <button onclick="window.filterFeed('basics')" id="filter-basics" class="category-btn hover:text-premium-dark pb-2 border-b-2 border-transparent transition-all whitespace-nowrap snap-start">Hardware</button>
             
-            <button onclick="window.filterFeed('viral')" id="filter-viral" class="category-btn text-blue-600 hover:text-genz-neon transition-all whitespace-nowrap snap-start border-b-2 border-transparent pb-2 font-extrabold flex items-center gap-2">
+            <button onclick="window.filterFeed('viral')" id="filter-viral" class="category-btn text-blue-600 hover:text-genz-neon pb-2 border-b-2 border-transparent transition-all whitespace-nowrap snap-start flex items-center gap-2 font-black">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> VIRAL ZONE
             </button>
         </div>
@@ -485,7 +460,7 @@
 
         <section class="feed-section block" data-category="outerwear" id="outerwear-section">
             <div class="mb-12 md:mb-16 flex items-center justify-between">
-                <h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark">Outerwear Signatures</h2>
+                <h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark" id="feed-title">Outerwear Signatures</h2>
                 <span class="text-[11px] uppercase tracking-[0.3em] font-extrabold text-gray-400 hidden md:block">The Archive</span>
             </div>
             
@@ -574,7 +549,7 @@
                         <span class="text-xl md:text-2xl font-serif font-bold text-premium-dark">₹3,299</span>
                         <div class="flex gap-2">
                             <button onclick="window.addToCart('High-Tops', 3299)" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold border-2 border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-3.5 rounded-[2px] transition-colors">Add</button>
-                            <button onclick="window.initiateCheckout('High-Tops', 3299, 'Affiliate Purchase')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
+                            <button onclick="window.initiateCheckout('High-Tops', 3299, 'Affiliate')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
                         </div>
                     </div>
                 </div>
@@ -592,7 +567,7 @@
                         <span class="text-xl md:text-2xl font-serif font-bold text-premium-dark">₹2,499</span>
                         <div class="flex gap-2">
                             <button onclick="window.addToCart('White Kicks', 2499)" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold border-2 border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-3.5 rounded-[2px] transition-colors">Add</button>
-                            <button onclick="window.initiateCheckout('White Kicks', 2499, 'Affiliate Purchase')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
+                            <button onclick="window.initiateCheckout('White Kicks', 2499, 'Affiliate')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
                         </div>
                     </div>
                 </div>
@@ -609,7 +584,7 @@
                         <span class="text-xl md:text-2xl font-serif font-bold text-premium-dark">₹1,899</span>
                         <div class="flex gap-2">
                             <button onclick="window.addToCart('Suede Loafers', 1899)" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold border-2 border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-3.5 rounded-[2px] transition-colors">Add</button>
-                            <button onclick="window.initiateCheckout('Suede Loafers', 1899, 'Affiliate Purchase')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
+                            <button onclick="window.initiateCheckout('Suede Loafers', 1899, 'Affiliate')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
                         </div>
                     </div>
                 </div>
@@ -620,14 +595,14 @@
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
                     <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Vintage Canvas Tops</h3>
                     <div class="flex gap-2 mt-3 mb-2">
-                        <span class="size-chip text-[9px] border border-gray-200 px-2 py-1 rounded-[2px] cursor-pointer font-bold text-gray-500">UK 7</span>
+                        <span class="size-chip text-[9px] border border-gray-200 px-2 py-1 rounded-[2px] cursor-pointer font-bold text-gray-500 hover:bg-gray-100">UK 7</span>
                         <span class="size-chip text-[9px] border border-gray-200 px-2 py-1 rounded-[2px] cursor-pointer font-bold bg-gray-100 text-premium-dark">UK 9</span>
                     </div>
                     <div class="mt-auto pt-5 flex flex-col gap-3 border-t border-gray-100 mt-4">
                         <span class="text-xl md:text-2xl font-serif font-bold text-premium-dark">₹1,199</span>
                         <div class="flex gap-2">
                             <button onclick="window.addToCart('Canvas Tops', 1199)" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold border-2 border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-3.5 rounded-[2px] transition-colors">Add</button>
-                            <button onclick="window.initiateCheckout('Canvas Tops', 1199, 'Affiliate Purchase')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
+                            <button onclick="window.initiateCheckout('Canvas Tops', 1199, 'Affiliate')" class="flex-1 text-[10px] uppercase tracking-widest font-extrabold bg-premium-dark text-white py-3.5 rounded-[2px] hover:bg-gray-800 transition-colors shadow-md">Buy</button>
                         </div>
                     </div>
                 </div>
@@ -635,10 +610,14 @@
         </section>
 
         <section class="feed-section block mt-24 md:mt-32" data-category="watches" id="watches-section">
-            <div class="mb-12 md:mb-16 flex items-center justify-between"><h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark">Watches & Essentials</h2></div>
+            <div class="mb-12 md:mb-16 flex items-center justify-between">
+                <h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark">Watches & Essentials</h2>
+            </div>
+            
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Old Money Minimal Watch">
                     <button onclick="window.toggleWishlist(this, 'Old Money Minimal Watch')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
+                    <div class="absolute top-5 left-5 z-10 bg-gray-100 text-premium-dark text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-[2px] font-extrabold shadow-sm border border-gray-200">Affiliate Sourced</div>
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
                     <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Minimalist Silver Watch</h3>
                     <div class="flex gap-2 mt-3 mb-2">
@@ -655,8 +634,9 @@
 
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Handcrafted Leather Wallet">
                     <button onclick="window.toggleWishlist(this, 'Handcrafted Leather Wallet')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
+                    <div class="absolute top-5 left-5 z-10 bg-gray-100 text-premium-dark text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-[2px] font-extrabold shadow-sm border border-gray-200">Premium Leather</div>
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
-                    <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Handcrafted Leather Wallet</h3>
+                    <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Handcrafted Wallet</h3>
                     <div class="flex gap-2 mt-3 mb-2">
                         <span class="size-chip text-[9px] border border-gray-200 px-2 py-1 rounded-[2px] cursor-pointer font-bold bg-gray-100 text-premium-dark">OS</span>
                     </div>
@@ -671,6 +651,7 @@
 
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Matte Black Sunglasses">
                     <button onclick="window.toggleWishlist(this, 'Matte Black Sunglasses')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
+                    <div class="absolute top-5 left-5 z-10 bg-gray-100 text-premium-dark text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-[2px] font-extrabold shadow-sm border border-gray-200">Bestseller</div>
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
                     <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Matte Black Shades</h3>
                     <div class="flex gap-2 mt-3 mb-2">
@@ -704,7 +685,10 @@
         </section>
 
         <section class="feed-section block mt-24 md:mt-32" data-category="basics" id="basics-section">
-            <div class="mb-12 md:mb-16 flex items-center justify-between"><h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark">Hardware & Basics</h2></div>
+            <div class="mb-12 md:mb-16 flex items-center justify-between">
+                <h2 class="text-4xl md:text-5xl font-serif font-bold tracking-wide text-premium-dark">Hardware & Basics</h2>
+            </div>
+            
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Powerlifting Belt">
                     <button onclick="window.toggleWishlist(this, 'Powerlifting Belt')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
@@ -726,6 +710,7 @@
 
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Heavyweight White Tee">
                     <button onclick="window.toggleWishlist(this, 'Heavyweight White Tee')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
+                    <div class="absolute top-5 left-5 z-10 bg-gray-100 text-premium-dark text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-[2px] font-extrabold shadow-sm border border-gray-200">Wardrobe Staple</div>
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
                     <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Heavyweight White Tee</h3>
                     <div class="flex gap-2 mt-3 mb-2">
@@ -760,6 +745,7 @@
 
                 <div class="product-card bg-white p-5 rounded-[4px] shadow-sm hover-lift flex flex-col relative border border-transparent hover:border-gray-200" data-name="Classic Ribbed Beanie">
                     <button onclick="window.toggleWishlist(this, 'Classic Ribbed Beanie')" class="heart-btn absolute top-6 right-6 z-20 text-gray-300 hover:text-red-500 bg-white/90 rounded-full p-2.5 shadow-sm transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
+                    <div class="absolute top-5 left-5 z-10 bg-gray-100 text-premium-dark text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-[2px] font-extrabold shadow-sm border border-gray-200">Winter Prep</div>
                     <div class="aspect-[4/5] bg-gray-50 mb-5 img-zoom overflow-hidden"><img src="https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&q=80" loading="lazy" class="w-full h-full object-cover"></div>
                     <h3 class="text-sm md:text-lg font-bold text-premium-dark line-clamp-1 tracking-wide">Classic Ribbed Beanie</h3>
                     <div class="flex gap-2 mt-3 mb-2">
@@ -785,7 +771,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-                <div onclick="window.showToast('Asset Pack unlocked! Kodak Portra presets sent to email. ✨', 'success')" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm">
+                <div onclick="window.showToast('Asset Pack unlocked! Kodak Portra presets sent to email. ✨', 'success')" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm transition-colors">
                     <div>
                         <div class="w-16 h-16 bg-premium-dark text-white flex items-center justify-center rounded-full mb-8 shadow-md"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
                         <span class="text-[10px] uppercase font-bold text-gray-400 mb-3 block tracking-[0.2em]">35mm Presets</span>
@@ -793,7 +779,7 @@
                         <p class="text-[12px] text-gray-500 leading-relaxed font-medium">Unlock 35mm film presets and viral typography overlays for editing.</p>
                     </div>
                 </div>
-                <div onclick="window.startAvatarCreation()" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm">
+                <div onclick="window.startAvatarCreation()" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm transition-colors">
                     <div>
                         <div class="w-16 h-16 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-gray-700 text-premium-dark flex items-center justify-center rounded-full mb-8 shadow-sm text-3xl">👤</div>
                         <span class="text-[10px] uppercase font-bold text-gray-400 mb-3 block tracking-[0.2em]">Try On Engine</span>
@@ -801,7 +787,7 @@
                         <p class="text-[12px] text-gray-500 leading-relaxed font-medium">Scan your face to create a digital twin and try outfits before purchasing.</p>
                     </div>
                 </div>
-                <div onclick="window.toggleMoodboard()" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm">
+                <div onclick="window.toggleMoodboard()" class="bg-white p-10 rounded-[4px] hover-lift border border-gray-100 dark:border-gray-800 cursor-pointer flex flex-col h-full justify-between shadow-sm transition-colors">
                     <div>
                         <div class="w-16 h-16 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-gray-700 text-premium-dark flex items-center justify-center rounded-full mb-8 shadow-sm text-3xl">🎨</div>
                         <span class="text-[10px] uppercase font-bold text-gray-400 mb-3 block tracking-[0.2em]">Curation Node</span>
@@ -809,7 +795,7 @@
                         <p class="text-[12px] text-gray-500 leading-relaxed font-medium">Construct your ultimate lookbook by dragging elements into a shared space.</p>
                     </div>
                 </div>
-                <div onclick="window.showToast('Your Affiliate Vault balance is ₹0. Start Curating!', 'success')" class="bg-premium-dark text-white p-10 rounded-[4px] shadow-xl hover-lift cursor-pointer flex flex-col h-full justify-between relative overflow-hidden">
+                <div onclick="window.showToast('Your Affiliate Vault balance is ₹0. Start Curating!', 'success')" class="bg-premium-dark text-white p-10 rounded-[4px] shadow-xl hover-lift cursor-pointer flex flex-col h-full justify-between relative overflow-hidden transition-colors">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white text-premium-dark flex items-center justify-center rounded-full mb-8 shadow-lg"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402-2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -825,7 +811,7 @@
     <footer class="bg-white border-t border-gray-100 py-20 md:py-28 px-6 mt-10 transition-colors duration-500">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
             <div>
-                <h3 class="logo-font text-3xl mb-6 text-premium-dark tracking-tight">Aesthetica.</h3>
+                <h3 class="logo-font text-4xl mb-6 text-premium-dark tracking-tight">Aesthetica.</h3>
                 <p class="text-[12px] text-gray-500 leading-relaxed max-w-xs mx-auto md:mx-0 font-medium">The premier decentralized architecture for creator-led shopping pipelines. Built for the modern aesthetic.</p>
             </div>
             <div>
@@ -943,7 +929,7 @@
                     <div class="bg-[#111111] border border-gray-700 p-8 rounded-[4px] shadow-2xl">
                         <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-5">
                             <span class="text-green-400 text-[11px] font-bold uppercase tracking-[0.2em]">Analysis Complete</span>
-                            <span class="text-white text-6xl font-serif font-bold tracking-widest"><span id="dynamic-score">8.8</span><span class="text-xl text-gray-500 font-sans tracking-normal">/10</span></span>
+                            <span class="text-white text-6xl font-serif font-bold tracking-widest"><span id="dynamic-score">9.2</span><span class="text-xl text-gray-500 font-sans tracking-normal">/10</span></span>
                         </div>
                         <div class="space-y-5 mb-8 text-left">
                             <p class="text-gray-300 text-[12px] leading-relaxed border-l-2 border-gray-600 pl-4"><strong class="text-white uppercase tracking-[0.2em] text-[10px] block mb-1">Aesthetic Detected:</strong> <span id="dynamic-style">Vintage / Old Money</span></p>
@@ -1126,9 +1112,10 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        window.currentUser = null; window.aiLensStream = null; window.arStream = null;
-        window.isLoginMode = true; window.isGenZMode = false; window.aiMode = 'scan'; 
-        window.currentOrderPayload = {};
+        window.currentUser = null;
+        window.aiLensStream = null; window.arStream = null;
+        window.isLoginMode = true; window.isGenZMode = false;
+        window.aiMode = 'scan'; window.currentOrderPayload = {};
         window.cartItems = JSON.parse(localStorage.getItem('aesthetica_cart')) || [];
         window.wishlistItems = JSON.parse(localStorage.getItem('aesthetica_wishlist')) || [];
 
@@ -1198,7 +1185,7 @@
                 else activeBtn.classList.add('text-premium-dark', 'border-premium-dark', 'active-filter');
             }
 
-            // Hide/Show Hardcoded Sections
+            // Hide/Show Hardcoded HTML Sections
             const sections = document.querySelectorAll('.feed-section');
             sections.forEach(sec => {
                 if(category === 'all') {
@@ -1219,12 +1206,19 @@
             let found = false;
             cards.forEach(c => { 
                 const n = c.getAttribute('data-name').toLowerCase(); 
-                if(n.includes(q)) { c.style.display='flex'; found=true; } else { c.style.display='none'; }
+                if(n.includes(q)) { 
+                    c.style.display='flex'; 
+                    found=true; 
+                } else {
+                    c.style.display='none';
+                }
             });
             if(!found && q !== '') document.getElementById('empty-search-state').classList.remove('hidden'); else document.getElementById('empty-search-state').classList.add('hidden');
         };
 
-        // REAL AI AVATAR ENGINE
+        // ==========================================
+        // REAL AI AVATAR ENGINE (Mesh Extraction Sim)
+        // ==========================================
         window.startAvatarCreation = function() { 
             window.haptic(); 
             document.getElementById('avatar-creation-modal').classList.remove('hidden'); 
@@ -1286,7 +1280,7 @@
                 if(window.arStream) window.arStream.getTracks().forEach(t=>t.stop()); 
                 window.closeAvatarCreation(); 
                 document.getElementById('avatar-studio-modal').classList.remove('hidden'); 
-                window.showToast("Digital Twin successfully generated!","success"); 
+                window.showToast("Twin successfully generated!","success"); 
             }, 4000); 
         };
         
@@ -1410,45 +1404,14 @@
                 window.haptic(); 
                 if(!document.getElementById('ai-lens-modal').classList.contains('hidden')) window.toggleAILensScanner(); 
                 window.showToast("Scanning via API...","success"); 
-                setTimeout(()=>{ 
-                    window.filterFeed('outerwear'); 
-                    window.searchLiveFeed('leather'); 
-                    window.showToast("Match Found!","success"); 
-                }, 2500); 
+                setTimeout(()=>{ window.filterFeed('outerwear'); window.searchLiveFeed('leather'); window.showToast("Match Found!","success"); }, 2500); 
             } 
         };
 
         // Cart, Checkout & Orders
-        window.toggleCartDrawer = function() { 
-            window.haptic(); 
-            const o=document.getElementById('cart-drawer-overlay'), d=document.getElementById('cart-drawer'); 
-            if(o.classList.contains('hidden')){
-                o.classList.remove('hidden'); 
-                setTimeout(()=>{o.classList.remove('opacity-0');d.classList.add('drawer-open');},10); 
-                document.body.style.overflow='hidden';
-            }else{
-                d.classList.remove('drawer-open');
-                o.classList.add('opacity-0'); 
-                setTimeout(()=>{o.classList.add('hidden');document.body.style.overflow='auto';},400);
-            }
-        };
-        
-        window.addToCart = function(n,p) { 
-            window.haptic(); 
-            let ex=window.cartItems.find(i=>i.name===n); 
-            if(ex){ex.qty+=1;ex.total+=p;} else {window.cartItems.push({name:n,price:p,qty:1,total:p});} 
-            localStorage.setItem('aesthetica_cart',JSON.stringify(window.cartItems)); 
-            window.updateCartUI(); 
-            window.showToast(`${n} added to bag!`); 
-        };
-        
-        window.removeCartItem = function(i) { 
-            window.haptic(); 
-            window.cartItems.splice(i,1); 
-            localStorage.setItem('aesthetica_cart',JSON.stringify(window.cartItems)); 
-            window.updateCartUI(); 
-        };
-        
+        window.toggleCartDrawer = function() { window.haptic(); const o=document.getElementById('cart-drawer-overlay'), d=document.getElementById('cart-drawer'); if(o.classList.contains('hidden')){o.classList.remove('hidden'); setTimeout(()=>{o.classList.remove('opacity-0');d.classList.add('drawer-open');},10); document.body.style.overflow='hidden';}else{d.classList.remove('drawer-open');o.classList.add('opacity-0'); setTimeout(()=>{o.classList.add('hidden');document.body.style.overflow='auto';},400);}};
+        window.addToCart = function(n,p) { window.haptic(); let ex=window.cartItems.find(i=>i.name===n); if(ex){ex.qty+=1;ex.total+=p;} else {window.cartItems.push({name:n,price:p,qty:1,total:p});} localStorage.setItem('aesthetica_cart',JSON.stringify(window.cartItems)); window.updateCartUI(); window.showToast(`${n} added to bag!`); };
+        window.removeCartItem = function(i) { window.haptic(); window.cartItems.splice(i,1); localStorage.setItem('aesthetica_cart',JSON.stringify(window.cartItems)); window.updateCartUI(); };
         window.updateCartUI = function() { 
             let tot=window.cartItems.reduce((s,i)=>s+i.qty,0); 
             document.getElementById('cart-counter-bubble').innerText=tot; 
@@ -1467,26 +1430,9 @@
             document.getElementById('cart-total').innerText=`₹${gt}`; 
         };
         
-        window.checkoutCart = function() { 
-            window.haptic(); 
-            if(window.cartItems.length===0) return window.showToast("Bag Empty","error"); 
-            window.toggleCartDrawer(); 
-            window.initiateCheckout(`Bundle (${window.cartItems.length})`, window.cartItems.reduce((s,i)=>s+i.total,0), 'Cart'); 
-        };
-        
-        window.initiateCheckout = function(n,p,t) { 
-            window.haptic(); 
-            window.currentOrderPayload={name:n,price:p,type:t}; 
-            document.getElementById('checkout-item-name').innerText=n; 
-            document.getElementById('checkout-item-price').innerText=`₹${p}`; 
-            document.getElementById('checkout-modal').classList.remove('hidden'); 
-        };
-        
-        window.closeCheckout = function() { 
-            document.getElementById('checkout-modal').classList.add('hidden'); 
-            window.haptic(); 
-        };
-        
+        window.checkoutCart = function() { window.haptic(); if(window.cartItems.length===0) return window.showToast("Bag Empty","error"); window.toggleCartDrawer(); window.initiateCheckout(`Bundle (${window.cartItems.length})`, window.cartItems.reduce((s,i)=>s+i.total,0), 'Cart'); };
+        window.initiateCheckout = function(n,p,t) { window.haptic(); window.currentOrderPayload={name:n,price:p,type:t}; document.getElementById('checkout-item-name').innerText=n; document.getElementById('checkout-item-price').innerText=`₹${p}`; document.getElementById('checkout-modal').classList.remove('hidden'); };
+        window.closeCheckout = function() { document.getElementById('checkout-modal').classList.add('hidden'); window.haptic(); };
         window.processPayment = async function() { 
             window.haptic(); 
             const btn=document.getElementById('pay-btn'); 
@@ -1499,7 +1445,7 @@
                     if(window.currentOrderPayload.type==='Cart'){window.cartItems=[]; localStorage.setItem('aesthetica_cart',JSON.stringify(window.cartItems)); window.updateCartUI();} 
                     window.closeCheckout(); 
                     window.showToast(`Transaction Success! ${window.currentOrderPayload.name} secured.`,"success"); 
-                } catch(err) { window.showToast("Sync Error: "+err.message,"error"); }
+                } catch(err) { window.showToast("Sync Error: "+err.message,"error"); } 
                 finally { btn.innerText="Pay Securely"; btn.classList.remove('opacity-80'); } 
             },2500); 
         };
@@ -1530,7 +1476,6 @@
             } 
             localStorage.setItem('aesthetica_wishlist',JSON.stringify(window.wishlistItems)); 
         };
-        
         window.initWishlistUI = function() { 
             document.querySelectorAll('.product-card').forEach(c=>{
                 const n=c.getAttribute('data-name'); 
@@ -1538,7 +1483,6 @@
                 if(n&&b&&window.wishlistItems.includes(n)) b.classList.add('wishlist-active');
             }); 
         };
-        
         window.toggleVaultModal = function() { 
             window.haptic(); 
             if(!window.currentUser) { window.toggleAuthModal(); return window.showToast("Sign in required","error");} 
@@ -1546,7 +1490,6 @@
             m.classList.toggle('hidden'); 
             if(!m.classList.contains('hidden')) window.updateVaultUI(); 
         };
-        
         window.updateVaultUI = function() { 
             const c=document.getElementById('vault-list-container'); 
             c.innerHTML=''; 
@@ -1554,7 +1497,7 @@
                 c.innerHTML='<p class="text-[11px] font-bold uppercase text-gray-400 text-center tracking-widest mt-10">Vault Empty</p>'; 
             } else { 
                 window.wishlistItems.forEach(i=>{ 
-                    c.innerHTML+=`<div class="border border-gray-200 dark:border-gray-800 p-5 mb-3 flex justify-between bg-gray-50 dark:bg-[#111] rounded-[4px]"><span class="text-[13px] font-bold text-premium-dark">${i}</span><span class="text-[9px] text-red-500 font-extrabold uppercase">Saved ♥</span></div>`; 
+                    c.innerHTML+=`<div class="border border-gray-200 dark:border-gray-800 p-5 mb-3 flex justify-between bg-gray-50 dark:bg-[#111] rounded-sm"><span class="text-[13px] font-bold text-premium-dark">${i}</span><span class="text-[9px] text-red-500 font-extrabold uppercase">Saved ♥</span></div>`; 
                 }); 
             } 
         };
@@ -1622,26 +1565,20 @@
                 if(window.arStream) window.arStream.getTracks().forEach(t=>t.stop());
             } 
         };
-        
         window.handleARPhotoUpload = function(e) { 
             if(e.target.files[0]){ 
                 window.haptic(); 
                 if(window.arStream) window.arStream.getTracks().forEach(t=>t.stop()); 
                 document.getElementById('ar-profile-feed').classList.add('hidden'); 
                 document.getElementById('ar-mode-text').innerText="Extracting Matrix..."; 
-                setTimeout(()=>{
-                    document.getElementById('profile-scan-line').classList.add('hidden'); 
-                    document.getElementById('ar-mode-text').innerText="Matrix Ready";
-                },2000); 
+                setTimeout(()=>{document.getElementById('profile-scan-line').classList.add('hidden'); document.getElementById('ar-mode-text').innerText="Matrix Ready";},2000); 
             } 
         };
-        
         window.calculatePowerFit = function() { 
             const h=document.getElementById('profile-height').value, b=document.getElementById('profile-body').value; 
             let str = b==='Athletic'?"V-Taper detected. Suggesting <b class='text-green-400'>Size XL</b>": "Heavy frame. Suggesting <b class='text-green-400'>Size XXL</b>"; 
             document.getElementById('power-fit-result').innerHTML = h ? `${str}<br><span class='text-[10px] text-gray-500 mt-2 block'>Height [${h}] mapped.</span>` : str; 
         };
-        
         window.saveProfile = async function() { 
             window.haptic(); 
             const btn=document.getElementById('save-profile-btn'); 
@@ -1659,7 +1596,7 @@
             } 
         };
 
-        // Boot
+        // System Boot
         window.onload = function() { 
             window.currentUser = {id: 'usr_arnav'}; 
             
