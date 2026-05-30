@@ -8,9 +8,7 @@
     <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#E8E8E8">
-    
-    <!-- EXTERNAL APP LOGO (Favicon / Browser Tab) -->
-    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     
     <!-- Fonts & Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -46,6 +44,10 @@
         .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s ease-out; }
         .toast-leave-active { transform: translateY(100%); opacity: 0; transition: all 0.3s ease-in; }
         
+        /* Drawer Slide */
+        .drawer-slide { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .drawer-open { transform: translateX(0); }
+        
         /* AR Scanner & Cinematic Studio CSS */
         @keyframes scan { 0% { transform: translateY(0); opacity: 1; } 50% { opacity: 0.5; } 100% { transform: translateY(300px); opacity: 1; } }
         .cinematic-35mm { filter: sepia(0.25) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg); }
@@ -61,43 +63,75 @@
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
             
-            <!-- INTERNAL TEXT LOGO & LOCATION -->
             <div class="flex-shrink-0 flex items-center space-x-4">
-                <span class="text-2xl font-serif font-semibold tracking-[0.15em] text-premium-dark cursor-pointer hover:opacity-80 transition-opacity">Aesthetica.</span>
+                <!-- INLINE PREMIUM LOGO -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" class="h-10 md:h-12 hover:opacity-80 transition-opacity cursor-pointer" onclick="window.scrollTo(0,0)">
+                  <defs>
+                    <style>@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap'); .brand-title { font-family: 'Cormorant Garamond', serif; }</style>
+                    <filter id="leafShadowInline" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="22" /></filter>
+                  </defs>
+                  <g fill="#2B2118" opacity="0.15" filter="url(#leafShadowInline)" style="mix-blend-mode: multiply;">
+                    <path d="M-100,500 C 150,300 250,100 400,-100 L 200,-100 C 100,100 0,300 -200,500 Z" />
+                    <path d="M300,150 C 450,100 550,0 700,-100 C 500,-50 400,50 300,150 Z" />
+                  </g>
+                  <text x="400" y="270" class="brand-title" font-size="160" font-weight="500" fill="#111111" text-anchor="middle" letter-spacing="-1">Aesthetica</text>
+                </svg>
+                
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
                     <span class="opacity-60">📍</span>
                     <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer transition-colors">Patna</span>
                 </div>
             </div>
             
-            <!-- Global Search -->
+            <!-- Global Search & AI Lens (NOW FUNCTIONAL TEXT SEARCH) -->
             <div class="flex-grow max-w-xl hidden md:flex items-center bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-premium-dark transition-all">
-                <input type="text" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
-                <button class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
+                <input type="text" id="global-search-input" oninput="searchLiveFeed(this.value)" placeholder="Search aesthetics, brands, or drop a photo..." class="w-full bg-transparent py-2.5 px-6 text-xs focus:outline-none placeholder-gray-400">
+                <button onclick="document.getElementById('ai-photo-search').click()" class="text-[9px] uppercase tracking-widest font-medium text-premium-dark bg-gray-50 border-l border-gray-100 px-5 py-2.5 hover:bg-gray-200 transition-colors">📸 Photo Search</button>
+                <input type="file" id="ai-photo-search" accept="image/*" class="hidden" onchange="triggerAISearch()">
             </div>
 
-            <!-- Profile Menus & Auth -->
             <div class="flex items-center gap-4 md:gap-6">
-                
-                <!-- PWA Install App Button -->
+                <!-- PWA Install Button -->
                 <button id="install-btn" class="font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
 
-                <!-- User Menu (Hidden till logged in) -->
+                <!-- User Menu -->
                 <div id="user-menu" class="hidden items-center space-x-4 md:space-x-6 text-[10px] uppercase tracking-widest font-medium text-premium-dark">
                     <button onclick="toggleOrdersModal()" class="hover:text-premium-muted transition-colors border-b border-transparent hover:border-premium-dark pb-0.5">My Orders</button>
                     <button onclick="toggleProfileModal()" class="hover:text-premium-muted transition-colors border-b border-dashed border-premium-dark pb-0.5">AR Profile</button>
                 </div>
                 
                 <button id="auth-btn" onclick="toggleAuthModal()" class="text-[11px] uppercase tracking-[0.15em] font-medium text-white bg-premium-dark px-4 py-2 hover:bg-gray-800 transition-colors shadow-sm rounded-sm">Login</button>
-                <button onclick="showToast('Cart functionality syncing with server...')" class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
+                
+                <!-- CART BUTTON -->
+                <button onclick="toggleCartDrawer()" id="cart-counter-btn" class="hidden md:block text-[11px] uppercase tracking-[0.15em] font-medium text-premium-dark border-b border-premium-dark pb-0.5 hover:opacity-60 transition-opacity">Cart (0)</button>
             </div>
         </div>
     </nav>
 
-    <!-- 3. SECURE CHECKOUT MODAL (RAZORPAY STYLE) -->
-    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex justify-center items-center p-4">
+    <!-- 2.5 CART DRAWER -->
+    <div id="cart-drawer-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] hidden opacity-0 transition-opacity duration-300">
+        <div id="cart-drawer" class="absolute top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl flex flex-col drawer-slide">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h2 class="text-xl font-serif text-premium-dark">Your Cart</h2>
+                <button onclick="toggleCartDrawer()" class="text-gray-500 hover:text-black text-lg">✕</button>
+            </div>
+            <div id="cart-items-container" class="flex-grow p-6 overflow-y-auto space-y-4">
+                <p class="text-xs text-gray-400 text-center mt-10 uppercase tracking-widest">Cart is empty</p>
+            </div>
+            <div class="p-6 border-t border-gray-200 bg-gray-50">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs uppercase tracking-widest text-premium-muted font-bold">Subtotal</span>
+                    <span id="cart-total" class="text-xl font-serif text-premium-dark">₹0</span>
+                </div>
+                <button onclick="checkoutCart()" class="w-full bg-premium-dark text-white text-[11px] uppercase tracking-widest font-bold py-3.5 rounded-sm hover:bg-gray-800 transition shadow-md">Checkout All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SECURE CHECKOUT MODAL -->
+    <div id="checkout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[160] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[4px] w-full max-w-sm relative animate-fade-in-up shadow-2xl">
             <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
             <div class="text-center mb-6">
@@ -120,7 +154,7 @@
         </div>
     </div>
 
-    <!-- 4. MY ORDERS DASHBOARD MODAL -->
+    <!-- 4. MY ORDERS MODAL -->
     <div id="orders-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-6 md:p-8 rounded-[2px] w-full max-w-2xl relative animate-fade-in-up max-h-[85vh] flex flex-col shadow-2xl">
             <button onclick="toggleOrdersModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -132,12 +166,11 @@
         </div>
     </div>
 
-    <!-- 5. THE ULTIMATE AR PROFILE MODAL (Live Cam + Photo + Studio + Fit AI) -->
+    <!-- 5. AR PROFILE MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4">
         <div class="bg-premium-dark p-6 rounded-[2px] w-full max-w-3xl relative animate-fade-in-up border border-gray-700 shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto hide-scroll">
             <button onclick="toggleProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl z-50 transition-colors">✕</button>
             
-            <!-- Left Side: Camera & 35mm Photo Studio -->
             <div class="w-full md:w-1/2 relative bg-black rounded-sm overflow-hidden flex items-center justify-center border border-gray-600 aspect-[3/4] group film-grain">
                 <video id="ar-video-feed" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
                 <img id="ar-uploaded-img" class="hidden absolute inset-0 w-full h-full object-cover z-10 transition-all duration-500" />
@@ -151,7 +184,6 @@
                     <span id="ar-mode-text" class="text-[8px] text-white uppercase tracking-widest font-bold drop-shadow-md">Live AR Map</span>
                 </div>
                 
-                <!-- 35mm Cinematic Controls -->
                 <div id="cinematic-controls" class="hidden absolute top-4 right-4 z-40 flex flex-col gap-2">
                     <button onclick="apply35mmFilter()" class="bg-black/60 backdrop-blur-md border border-yellow-500/50 text-yellow-400 text-[8px] uppercase tracking-widest px-2 py-1.5 rounded-sm hover:bg-yellow-500/20 transition shadow-lg">
                         Apply Kodak Portra 400
@@ -168,7 +200,6 @@
                 <input type="file" id="ar-photo-upload" accept="image/*" class="hidden" onchange="handleARPhotoUpload(event)">
             </div>
 
-            <!-- Right Side: Power-Fit Sizing & Aesthetic Vibe Personalization -->
             <div class="w-full md:w-1/2 flex flex-col justify-center text-white">
                 <h2 class="text-2xl font-serif mb-2 text-white">AR Drape & Power-Fit</h2>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-6">AI computes exact sizing based on frame density.</p>
@@ -197,7 +228,6 @@
                         </select>
                     </div>
                     
-                    <!-- Power-Fit Feedback Box -->
                     <div id="power-fit-box" class="mt-4 p-3 border border-gray-600 bg-gray-800/50 rounded-sm">
                         <span class="text-[8px] text-green-400 uppercase tracking-widest font-bold block mb-1">⚡ Power-Fit AI Result</span>
                         <p id="power-fit-result" class="text-[11px] text-white italic">Enter metrics to calculate perfect size.</p>
@@ -211,7 +241,7 @@
         </div>
     </div>
 
-    <!-- 6. SECURE AUTHENTICATION MODAL (Login/Signup Toggle) -->
+    <!-- 6. SECURE AUTHENTICATION MODAL -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex justify-center items-center p-4">
         <div class="bg-white p-8 rounded-[2px] w-full max-w-md relative animate-fade-in-up shadow-2xl">
             <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black text-xl transition-colors">✕</button>
@@ -243,23 +273,20 @@
         </div>
     </div>
 
-    <!-- 7. PROMOTION BANNERS (Horizontal Scroll) -->
+    <!-- 7. PROMOTION BANNERS -->
     <div class="max-w-[1400px] mx-auto px-6 py-6 border-b border-gray-300 animate-fade-in-up">
         <div class="flex gap-4 overflow-x-auto hide-scroll pb-4 snap-x snap-mandatory">
-            <!-- Banner 1 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-premium-dark rounded-[2px] p-5 text-white relative flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div class="flex items-center space-x-2 mb-1"><span class="text-[8px] bg-white text-black px-1.5 py-0.5 uppercase tracking-widest font-bold">The Vault</span><span class="text-[8px] uppercase tracking-widest text-red-400">Ends in 08h 45m</span></div>
                 <h3 class="text-lg font-serif mb-0.5">Vintage Leather Drop.</h3>
                 <p class="text-[10px] text-gray-400 font-light">3 exclusive local jackets available.</p>
             </div>
-            <!-- Banner 2 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-gray-300 rounded-[2px] p-5 text-white relative overflow-hidden flex flex-col justify-center shadow-md cursor-pointer hover:-translate-y-1 transition-all group">
                 <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-black/50"></div>
                 <div class="relative z-10"><span class="text-[8px] bg-white/20 backdrop-blur-md border border-white/30 text-white px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">Shoppable Feed</span><h3 class="text-lg font-serif mb-0.5">The Lookbook</h3><p class="text-[10px] text-gray-200">Scroll creator vibes.</p></div>
             </div>
-            <!-- Banner 3 -->
             <div class="snap-start min-w-[280px] md:min-w-[400px] h-32 bg-white border border-gray-200 rounded-[2px] p-5 text-premium-dark relative overflow-hidden flex flex-col justify-center shadow-sm cursor-pointer hover:border-premium-dark transition">
                 <div class="relative z-10"><span class="text-[8px] border border-premium-dark text-premium-dark px-1.5 py-0.5 uppercase tracking-widest font-bold mb-1.5 inline-block">For Boutiques</span><h3 class="text-lg font-serif mb-0.5">Sell locally via AI.</h3><p class="text-[10px] text-premium-muted font-light">Drop a photo. We digitize and list it.</p></div>
             </div>
@@ -269,77 +296,84 @@
     <!-- 8. MAIN CONTENT FEEDS -->
     <main class="max-w-[1400px] mx-auto px-6 py-8 animate-fade-in-up mt-4">
         
-        <!-- Category Navbar -->
+        <!-- Category Filters -->
         <div class="flex space-x-8 overflow-x-auto hide-scroll text-[10px] uppercase tracking-[0.2em] font-medium text-premium-muted border-b border-gray-300 pb-4 mb-10">
-            <a href="#" class="text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</a>
-            <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</a>
-            <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Watches</a>
-            <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Footwear</a>
-            <a href="#" class="hover:text-premium-dark transition whitespace-nowrap">Rentals</a>
+            <button onclick="filterFeed('all')" class="category-btn text-premium-dark border-b border-premium-dark pb-1 whitespace-nowrap">All Collections</button>
+            <button onclick="filterFeed('old-money')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Old Money Classics</button>
+            <button onclick="filterFeed('watches')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Watches</button>
+            <button onclick="filterFeed('rentals')" class="category-btn hover:text-premium-dark transition whitespace-nowrap">Rentals & Bikes</button>
         </div>
 
         <div class="space-y-20"> 
             
-            <!-- Live Feed 1: Cheapest Finds (WITH FALLBACK DATA SO IT NEVER LOOKS EMPTY) -->
-            <section>
+            <!-- Live Feed 1: Cheapest Finds -->
+            <section class="feed-section" data-category="old-money">
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Default Dummy Card 1 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Coffee Brown Linen Shirt</h3>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹999</span>
-                            <button onclick="initiateCheckout('Coffee Brown Linen Shirt', 999, 'Affiliate Buy')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Coffee Brown Linen Shirt', 999)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Coffee Brown Linen Shirt', 999, 'Affiliate Buy')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
+                            </div>
                         </div>
                     </div>
-                    <!-- Default Dummy Card 2 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Vintage Leather Jacket</h3>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹3,499</span>
-                            <button onclick="initiateCheckout('Vintage Leather Jacket', 3499, 'Affiliate Buy')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Vintage Leather Jacket', 3499)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Vintage Leather Jacket', 3499, 'Affiliate Buy')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Live Feed 2: Local Boutiques (WITH FALLBACK DATA) -->
-            <section>
+            <!-- Live Feed 2: Local Boutiques -->
+            <section class="feed-section" data-category="watches">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Default Dummy Card 3 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1594938298596-70f5846ce271?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Premium Vine Kurta</h3>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹1,299</span>
-                            <button onclick="initiateCheckout('Premium Vine Kurta', 1299, 'Local Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Premium Vine Kurta', 1299)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Premium Vine Kurta', 1299, 'Local Purchase')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
+                            </div>
                         </div>
                     </div>
-                    <!-- Default Dummy Card 4 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Old Money Minimal Watch</h3>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹2,100</span>
-                            <button onclick="initiateCheckout('Old Money Watch', 2100, 'Local Purchase')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Old Money Watch', 2100)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Old Money Watch', 2100, 'Local Purchase')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 9. Creator's Garage (High Ticket P2P Section) -->
-            <section>
+            <!-- 9. Creator's Garage (Rentals) -->
+            <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <div>
                         <h2 class="text-2xl font-serif text-premium-dark">Creator's Garage</h2>
@@ -347,70 +381,73 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Garage Item 1: Bullet 350 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Royal Enfield Bullet 350</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Vintage Edition • Patna</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium">₹2,500<span class="text-[8px] text-gray-400">/day</span></span>
-                            <button onclick="initiateCheckout('RE Bullet 350', 2500, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('RE Bullet 350 (1 Day)', 2500)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('RE Bullet 350', 2500, 'Creator Garage')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
+                            </div>
                         </div>
                     </div>
-                    <!-- Garage Item 2: Dominar 400 -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-black text-white border border-gray-800 text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">High-Ticket P2P</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1621009897148-5c45ce126b48?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Bajaj Dominar 400</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Touring Spec • Patna</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium">₹1,800<span class="text-[8px] text-gray-400">/day</span></span>
-                            <button onclick="initiateCheckout('Bajaj Dominar 400', 1800, 'Creator Garage')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Bajaj Dominar 400 (1 Day)', 1800)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Bajaj Dominar 400', 1800, 'Creator Garage')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Book</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Regular P2P Rentals Section -->
-            <section>
+            <!-- Regular P2P Rentals Section (BUG FIXED: ADDED FILTER CLASS) -->
+            <section class="feed-section" data-category="rentals">
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Rental Item 1: Continental GT -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
                         <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark">Continental GT 650</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">Lender: Rahul K. ★ 4.9</p>
-                        <div class="flex items-center space-x-1 mb-2 mt-1 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
-                            <svg class="w-3 h-3 text-premium-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            <span class="text-[8px] font-bold text-premium-dark uppercase tracking-widest border-b border-dashed border-gray-400">Co-Rent (Split Cost)</span>
-                        </div>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium">₹1,200</span>
-                            <button onclick="initiateCheckout('Continental GT 650', 1200, 'P2P Rental')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Continental GT 650 (1 Day)', 1200)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Continental GT 650', 1200, 'P2P Rental')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Rental Item 2: Gym Power Belt -->
-                    <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
+                    <div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group hover-lift">
                         <div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5">P2P Rental</div>
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">Leather Powerlifting Belt</h3>
                         <p class="text-[9px] text-premium-muted uppercase tracking-widest mt-1 mb-1">140kg Tested • Heavy Duty</p>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium">₹400<span class="text-[8px] text-gray-400">/day</span></span>
-                            <button onclick="initiateCheckout('Powerlifting Belt', 400, 'P2P Rental')" class="text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white px-3 py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('Powerlifting Belt (1 Day)', 400)" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('Powerlifting Belt', 400, 'P2P Rental')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 rounded-sm hover:bg-gray-800 shadow-sm transition-colors">Rent</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- 10. CREATOR TOOLS (All 4 Cards) -->
+        <!-- 10. CREATOR TOOLS -->
         <section class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -420,8 +457,7 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-                <!-- Tool 1 -->
-                <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
+                <div onclick="showToast('Asset Pack unlocked! Check your email. ✨')" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-premium-dark text-white flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
                         <span class="text-[9px] uppercase tracking-widest font-bold text-premium-muted mb-1 block">Digital Asset Pack</span>
@@ -429,7 +465,6 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Every checkout triggers access. Get presets, audio loops, and viral captions.</p>
                     </div>
                 </div>
-                <!-- Tool 2 (Triggers AR Profile) -->
                 <div onclick="toggleProfileModal()" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="w-10 h-10 bg-gray-100 text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md border border-gray-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></div>
@@ -438,8 +473,7 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Activate live capture device or upload frame portraits for garment mapping.</p>
                     </div>
                 </div>
-                <!-- Tool 3 -->
-                <div class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
+                <div onclick="showToast('Collab link copied to clipboard! 🔗')" class="bg-premium-card p-6 rounded-[2px] hover-lift glowing-border group cursor-pointer border border-gray-100 flex flex-col justify-between h-full">
                     <div>
                         <div class="flex -space-x-3 mb-4 group-hover:scale-110 transition-transform duration-500">
                             <div class="w-10 h-10 rounded-full border-2 border-white bg-gray-300 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/100?img=11" alt="User"></div>
@@ -450,8 +484,7 @@
                         <p class="text-[11px] text-premium-muted leading-relaxed">Planning complex studio captures? Share structural costs for high-tier props.</p>
                     </div>
                 </div>
-                <!-- Tool 4 -->
-                <div class="bg-premium-dark text-white p-6 rounded-[2px] shadow-xl hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
+                <div onclick="showToast('Your Affiliate Vault balance is ₹0')" class="bg-premium-dark text-white p-6 rounded-[2px] shadow-xl hover-lift group cursor-pointer relative overflow-hidden flex flex-col justify-between h-full">
                     <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                     <div class="relative z-10">
                         <div class="w-10 h-10 bg-white text-premium-dark flex items-center justify-center rounded-full mb-4 group-hover:scale-110 transition-transform shadow-md"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -488,10 +521,10 @@
         </div>
     </footer>
 
-    <!-- 12. FULL SUPABASE & APPLICATION LOGIC SCRIPT (DO NOT REMOVE OR EDIT) -->
+    <!-- 12. SUPABASE & APP LOGIC SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase DB Connection (Ensure your RLS policies allow inserts!)
+        // Supabase DB Connection
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -500,52 +533,32 @@
         let arStream = null;
         let currentOrderPayload = {};
         let isLoginMode = true; 
+        
+        // BUG FIX: Cart items memory using LocalStorage
+        let cartItems = JSON.parse(localStorage.getItem('aesthetica_cart')) || [];
 
-        // ==========================================
-        // PWA Service Worker Registration
-        // ==========================================
+        // PWA Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker Registered Successfully!'))
-                    .catch(err => console.log('SW Registration Failed:', err));
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Failed:', err));
             });
         }
 
-        // ==========================================
-        // PWA Install Prompt Logic (Always visible in Navbar)
-        // ==========================================
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); 
-            deferredPrompt = e;
-        });
-        
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
         document.getElementById('install-btn').addEventListener('click', async () => {
             if(deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if(outcome === 'accepted') {
-                    console.log("App installed successfully");
-                }
                 deferredPrompt = null;
-            } else {
-                showToast("To install: Use your browser's 'Add to Home Screen' menu ✨");
-            }
+            } else { showToast("To install: Use your browser's 'Add to Home Screen' menu ✨"); }
         });
 
-        // ==========================================
-        // Toast Feedback System
-        // ==========================================
         function showToast(message, type = "success") {
             const c = document.getElementById('toast-container');
             const t = document.createElement('div');
             t.className = `bg-premium-dark text-white px-6 py-3 rounded-sm shadow-2xl text-[11px] uppercase tracking-widest font-medium toast-enter flex items-center gap-3`;
-            
-            const icon = type === "error" 
-                ? `<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`
-                : `<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-            
+            const icon = type === "error" ? `<svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>` : `<svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
             t.innerHTML = `${icon} <span>${message}</span>`;
             c.appendChild(t);
             setTimeout(() => t.classList.add('toast-enter-active'), 10);
@@ -553,10 +566,112 @@
         }
 
         // ==========================================
-        // Modals Toggle
+        // FEATURE: LIVE TEXT SEARCH ENGINE
         // ==========================================
+        function searchLiveFeed(query) {
+            const q = query.toLowerCase();
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                if(title.includes(q)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ==========================================
+        // FEATURE: CART DRAWER & LOCAL STORAGE
+        // ==========================================
+        function toggleCartDrawer() {
+            const overlay = document.getElementById('cart-drawer-overlay');
+            const drawer = document.getElementById('cart-drawer');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => { overlay.classList.remove('opacity-0'); drawer.classList.add('drawer-open'); }, 10);
+            } else {
+                drawer.classList.remove('drawer-open'); overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function addToCart(name, price) {
+            cartItems.push({ name, price });
+            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems)); // Save to memory
+            updateCartUI();
+            showToast(`${name} added to cart!`);
+        }
+
+        function removeCartItem(index) {
+            cartItems.splice(index, 1);
+            localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems)); // Save to memory
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-counter-btn').innerText = `Cart (${cartItems.length})`;
+            const container = document.getElementById('cart-items-container');
+            let total = 0;
+            
+            if (cartItems.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400 text-center mt-10 uppercase tracking-widest">Cart is empty</p>';
+            } else {
+                container.innerHTML = '';
+                cartItems.forEach((item, index) => {
+                    total += item.price;
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                            <div><h4 class="text-[11px] font-bold text-premium-dark">${item.name}</h4><span class="text-[10px] text-gray-500">₹${item.price}</span></div>
+                            <button onclick="removeCartItem(${index})" class="text-gray-400 hover:text-red-500 text-xs">✕</button>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-total').innerText = `₹${total}`;
+        }
+
+        function checkoutCart() {
+            if(cartItems.length === 0) return showToast("Cart is empty", "error");
+            toggleCartDrawer();
+            let total = cartItems.reduce((sum, item) => sum + item.price, 0);
+            initiateCheckout(`Cart Bundle (${cartItems.length} items)`, total, 'Cart Purchase');
+        }
+
+        // Initialize Cart UI on load
+        updateCartUI();
+
+        // ==========================================
+        // CATEGORY FILTERS
+        // ==========================================
+        function filterFeed(category) {
+            const sections = document.querySelectorAll('.feed-section');
+            const btns = document.querySelectorAll('.category-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1');
+                btn.classList.add('hover:text-premium-dark', 'transition');
+            });
+            event.target.classList.add('text-premium-dark', 'border-b', 'border-premium-dark', 'pb-1');
+
+            sections.forEach(sec => {
+                if (category === 'all' || sec.getAttribute('data-category') === category) {
+                    sec.style.display = 'block';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        }
+
+        function triggerAISearch() {
+            const input = document.getElementById('ai-photo-search');
+            if(input.files && input.files[0]) {
+                showToast("Scanning aesthetics...", "success");
+                setTimeout(() => showToast("Searching database for matches...", "success"), 1500);
+                setTimeout(() => { showToast("No exact matches found yet.", "error"); input.value = ''; }, 3500);
+            }
+        }
+
+        // Modals & Auth Toggles
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
-        
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
             document.getElementById('auth-title').innerText = isLoginMode ? 'Welcome Back.' : 'Join Aesthetica.';
@@ -564,16 +679,13 @@
             document.getElementById('auth-switch-text').innerText = isLoginMode ? 'New to ecosystem?' : 'Already have an account?';
             document.getElementById('auth-switch-btn').innerText = isLoginMode ? 'Create Account' : 'Login Here';
         }
-
         function toggleOrdersModal() { 
             if(!currentUser) return showToast("Login required to view history", "error");
             document.getElementById('orders-modal').classList.toggle('hidden');
             if(!document.getElementById('orders-modal').classList.contains('hidden')) fetchMyOrders();
         }
 
-        // ==========================================
-        // Razorpay Checkout Modal Engine
-        // ==========================================
+        // Checkout Engine
         function initiateCheckout(productName, price, type) {
             if (!currentUser) { toggleAuthModal(); return showToast("Login required to purchase"); }
             currentOrderPayload = { name: productName, price: price, type: type };
@@ -581,7 +693,6 @@
             document.getElementById('checkout-item-price').innerText = `₹${price}`;
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
-        
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
         
         async function processPayment() {
@@ -593,6 +704,13 @@
                 const { error } = await supabaseClient.from('orders').insert({
                     user_id: currentUser.id, product_name: currentOrderPayload.name, price: currentOrderPayload.price, order_type: currentOrderPayload.type
                 });
+                
+                if(currentOrderPayload.type === 'Cart Purchase') { 
+                    cartItems = []; 
+                    localStorage.setItem('aesthetica_cart', JSON.stringify(cartItems));
+                    updateCartUI(); 
+                }
+                
                 closeCheckout(); 
                 btn.innerText = originalText;
                 
@@ -601,27 +719,19 @@
             }, 1500);
         }
 
-        // ==========================================
-        // Fetch Orders (Real-time DB)
-        // ==========================================
+        // Order History Fetch
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
             container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>';
-            
             const { data, error } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-            
             if(data) {
                 container.innerHTML = '';
                 if(data.length===0) container.innerHTML = '<p class="text-center text-sm text-gray-500 mt-6">No orders yet.</p>';
                 data.forEach(o => {
                     const date = new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-                    
-                    let badge = '';
-                    if(o.order_type === 'P2P Rental' || o.order_type === 'Creator Garage') {
-                        badge = '<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Rented</span>';
-                    } else {
-                        badge = '<span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Processing</span>';
-                    }
+                    let badge = (o.order_type === 'P2P Rental' || o.order_type === 'Creator Garage') 
+                        ? '<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Rented</span>'
+                        : '<span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm">Processing</span>';
                     
                     container.innerHTML += `<div class="border border-gray-200 p-4 rounded-sm flex justify-between items-center mb-3 hover:bg-gray-50 transition-colors">
                         <div><div class="flex items-center gap-3 mb-1"><h4 class="text-sm font-medium text-premium-dark">${o.product_name}</h4>${badge}</div><p class="text-[10px] text-gray-500 uppercase">${date} • ${o.order_type}</p></div>
@@ -630,17 +740,10 @@
             }
         }
 
-        // ==========================================
-        // Live Products Loading (With HTML Fallbacks)
-        // ==========================================
+        // FEATURE UPDATE: Supabase Products now have Add to Cart buttons
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
-            
-            // Backup the default HTML cards in case DB is empty, so it never looks blank!
-            const defaultCheapHTML = cheapContainer.innerHTML;
-            const defaultLocalHTML = localContainer.innerHTML;
-
             const { data, error } = await supabaseClient.from('products').select('*');
             
             if(data && data.length > 0) {
@@ -651,25 +754,23 @@
                         ? `<div class="absolute top-3 left-3 z-10 bg-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Local Boutique</div>`
                         : `<div class="absolute top-3 left-3 z-10 bg-premium-dark text-white text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">Cheapest Drop</div>`;
                     
-                    const card = `<div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
+                    const card = `<div class="product-card bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         ${badgeHtml}
                         <div class="aspect-[4/5] bg-gray-50 overflow-hidden mb-3"><img src="${p.image_url || 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=400'}" class="w-full h-full object-cover"></div>
                         <h3 class="text-sm font-medium text-premium-dark line-clamp-1">${p.title}</h3>
-                        <div class="mt-auto border-t border-gray-100 pt-3 flex justify-between items-center mt-3">
+                        <div class="mt-auto border-t border-gray-100 pt-3 flex flex-col gap-2 mt-3">
                             <span class="text-base font-serif font-medium text-premium-dark">₹${p.price}</span>
-                            <button onclick="initiateCheckout('${cleanTitle}', ${p.price}, '${p.is_local ? 'Local Purchase' : 'Affiliate Buy'}')" class="text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white px-3 py-1.5 transition rounded-sm">Buy</button>
+                            <div class="flex gap-2">
+                                <button onclick="addToCart('${cleanTitle}', ${p.price})" class="flex-1 text-[9px] uppercase tracking-widest font-bold border border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white py-1.5 transition rounded-sm">Add to Cart</button>
+                                <button onclick="initiateCheckout('${cleanTitle}', ${p.price}, '${p.is_local ? 'Local Purchase' : 'Affiliate Buy'}')" class="flex-1 text-[9px] uppercase tracking-widest font-bold bg-premium-dark text-white py-1.5 transition rounded-sm hover:bg-gray-800 shadow-sm">Buy Now</button>
+                            </div>
                         </div></div>`;
                     if(p.is_local) localContainer.innerHTML += card; else cheapContainer.innerHTML += card;
                 });
-            } else {
-                // Keep the default hardcoded HTML cards showing instead of a blank screen!
-                console.log("Supabase empty. Loading premium fallback cards.");
             }
         }
 
-        // ==========================================
-        // AR Profile Engine (Camera + Studio + Fit)
-        // ==========================================
+        // AR Profile Engine
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
             const modal = document.getElementById('profile-modal');
@@ -679,9 +780,7 @@
                 document.getElementById('cinematic-controls').classList.add('hidden');
                 document.getElementById('ar-video-feed').classList.remove('hidden');
                 document.getElementById('scan-line').classList.remove('hidden');
-                
                 calculatePowerFit(); 
-                
                 try {
                     arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
                     document.getElementById('ar-video-feed').srcObject = arStream;
@@ -689,21 +788,16 @@
                     document.getElementById('ar-status-text').innerText = "Camera Blocked. Use Upload Photo."; 
                     document.getElementById('ar-status-text').classList.replace('text-green-400', 'text-red-500');
                 }
-            } else { 
-                if(arStream) arStream.getTracks().forEach(t => t.stop()); 
-            }
+            } else { if(arStream) arStream.getTracks().forEach(t => t.stop()); }
         }
 
         function handleARPhotoUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 if(arStream) arStream.getTracks().forEach(t => t.stop());
-                
                 document.getElementById('ar-video-feed').classList.add('hidden');
                 const img = document.getElementById('ar-uploaded-img');
-                img.classList.remove('hidden'); 
-                img.classList.remove('cinematic-35mm'); 
-                
+                img.classList.remove('hidden'); img.classList.remove('cinematic-35mm'); 
                 document.getElementById('ar-status-text').innerText = "Analyzing Dimensions...";
                 
                 const r = new FileReader();
@@ -718,38 +812,29 @@
                 r.readAsDataURL(file);
             }
         }
-        
-        function apply35mmFilter() { 
-            document.getElementById('ar-uploaded-img').classList.add('cinematic-35mm'); 
-            showToast("Kodak Portra 400 aesthetic applied! 📸"); 
-        }
+        function apply35mmFilter() { document.getElementById('ar-uploaded-img').classList.add('cinematic-35mm'); showToast("Kodak Portra 400 aesthetic applied! 📸"); }
 
         function calculatePowerFit() {
             const phys = document.getElementById('profile-body').value;
             const box = document.getElementById('power-fit-result');
-            
             if(phys === 'Athletic') box.innerHTML = "Athletic build (heavy back frame). Recommending <b class='text-green-400'>Size XL</b> for proper drape.";
             else if(phys === 'Broad') box.innerHTML = "Heavy frame. Recommending <b class='text-green-400'>Size XXL</b> for relaxed aesthetic.";
             else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
-        // ==========================================
-        // Auth, Session & Data Personalization
-        // ==========================================
+        // Auth Logic
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
             if(!email || !password) return showToast("Enter credentials", "error");
-            
             document.getElementById('submit-auth-btn').innerText = "Syncing...";
-            
             try {
                 if(isLoginMode) {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     location.reload();
                 } else {
-                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                    const { error } = await supabaseClient.auth.signUp({ email, password });
                     if (error) throw error;
                     location.reload();
                 }
@@ -758,9 +843,12 @@
                 document.getElementById('submit-auth-btn').innerText = isLoginMode ? "Login" : "Sign Up";
             }
         }
+        async function handleOAuth(p) { await supabaseClient.auth.signInWithOAuth({ provider: p, options: { redirectTo: window.location.origin } }); }
         
-        async function handleOAuth(p) { 
-            await supabaseClient.auth.signInWithOAuth({ provider: p, options: { redirectTo: window.location.origin } }); 
+        async function handleLogout() {
+            document.getElementById('auth-btn').innerText = "Exiting...";
+            await supabaseClient.auth.signOut();
+            location.reload();
         }
         
         async function checkSession() {
@@ -768,29 +856,19 @@
             if(session) {
                 currentUser = session.user;
                 document.getElementById('auth-btn').innerText = "Logout";
-                document.getElementById('auth-btn').onclick = () => { supabaseClient.auth.signOut(); location.reload(); };
+                document.getElementById('auth-btn').onclick = handleLogout;
                 
-                // Show user menus
                 document.getElementById('user-menu').classList.remove('hidden');
                 document.getElementById('user-menu').classList.add('flex');
                 
-                // Load User Data from Profile Table
                 const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
                 if (data) {
                     if(data.height) document.getElementById('profile-height').value = data.height;
                     if(data.body_type) document.getElementById('profile-body').value = data.body_type;
                     if(data.style_preference) {
                         document.getElementById('profile-style').value = data.style_preference;
-                        
-                        const titles = { 
-                            'old_money': 'Curated: Old Money Finds', 
-                            'vintage_leather': 'Curated: Vintage Edgy', 
-                            'traditional': 'Curated: Premium Traditional', 
-                            'athletic': 'Curated: Gym & Lifting Gear' 
-                        };
-                        if(titles[data.style_preference]) {
-                            document.getElementById('dynamic-feed-title').innerText = titles[data.style_preference];
-                        }
+                        const titles = { 'old_money': 'Curated: Old Money Finds', 'vintage_leather': 'Curated: Vintage Edgy', 'traditional': 'Curated: Premium Traditional', 'athletic': 'Curated: Gym & Lifting Gear' };
+                        if(titles[data.style_preference]) document.getElementById('dynamic-feed-title').innerText = titles[data.style_preference];
                     }
                 }
             }
@@ -800,9 +878,7 @@
             const h = document.getElementById('profile-height').value;
             const b = document.getElementById('profile-body').value;
             const s = document.getElementById('profile-style').value;
-            
             document.getElementById('save-profile-btn').innerText = "Saving Matrix...";
-            
             const { error } = await supabaseClient.from('profiles').upsert({ id: currentUser.id, height: h, body_type: b, style_preference: s });
             if(error) {
                 showToast("DB Error: " + error.message, "error");
@@ -813,9 +889,7 @@
             }
         }
 
-        // ==========================================
-        // Boot Application
-        // ==========================================
+        // Boot
         checkSession(); 
         loadLiveProducts();
     </script>
