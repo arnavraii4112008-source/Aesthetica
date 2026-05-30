@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
     
-    <!-- PWA Setup (Install App Feature) -->
+    <!-- PWA Setup (For Install App Feature) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#E8E8E8">
-    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+    
     <!-- Fonts & Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -57,9 +58,9 @@
     <!-- 2. MAIN NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
-            <!-- Brand & Location -->
+            <!-- RESTORED: Text Brand Logo & Location -->
             <div class="flex-shrink-0 flex items-center space-x-4">
-                <img src="logo.svg" alt="Aesthetica Logo" class="h-12 md:h-16 object-contain hover:opacity-80 transition-opacity cursor-pointer drop-shadow-sm rounded-sm">
+                <span class="text-2xl font-serif font-semibold tracking-[0.15em] uppercase text-premium-dark cursor-pointer hover:opacity-80 transition-opacity">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
                     <span class="opacity-60">📍</span>
                     <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer transition-colors">Patna</span>
@@ -75,8 +76,8 @@
             <!-- Profile Menus & Auth -->
             <div class="flex items-center gap-4 md:gap-6">
                 
-                <!-- NEW: Premium Install App Button (Aesthetica Font) -->
-                <button id="install-btn" class="hidden font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-transparent hover:border-premium-dark pb-0.5 transition-all">
+                <!-- RESTORED & PERMANENTLY VISIBLE: Premium Install App Button -->
+                <button id="install-btn" class="font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
 
@@ -276,12 +277,11 @@
 
         <div class="space-y-20"> 
             
-            <!-- Live Feed 1: Cheapest Finds (Dynamic Title based on Vibe) -->
+            <!-- Live Feed 1: Cheapest Finds -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <h2 id="dynamic-feed-title" class="text-2xl font-serif text-premium-dark transition-all duration-300">Cheapest Finds Online</h2>
                 </div>
-                <!-- Dynamic products container -->
                 <div id="cheapest-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
                         <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -296,7 +296,6 @@
                 <div class="flex justify-between items-end mb-6">
                     <h2 class="text-2xl font-serif text-premium-dark flex items-center">Local Boutiques</h2>
                 </div>
-                <!-- Dynamic products container -->
                 <div id="local-products" class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="col-span-full p-8 border border-dashed border-gray-300 flex flex-col items-center justify-center rounded-sm">
                         <svg class="w-8 h-8 text-gray-300 mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -305,7 +304,7 @@
                 </div>
             </section>
 
-            <!-- Creator's Garage (High Ticket P2P Section) -->
+            <!-- 9. Creator's Garage (High Ticket P2P Section) -->
             <section>
                 <div class="flex justify-between items-end mb-6">
                     <div>
@@ -345,7 +344,7 @@
                     <h2 class="text-2xl font-serif text-premium-dark">Rentals & Props (P2P)</h2>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <!-- Rental Item 1: Motorcycle -->
+                    <!-- Rental Item 1: Continental GT -->
                     <div class="bg-premium-card p-4 rounded-[2px] shadow-sm border border-transparent hover:border-gray-200 transition-all flex flex-col group img-zoom hover-lift">
                         <div class="absolute top-3 right-3 z-10 bg-premium-dark text-white text-[7px] uppercase tracking-widest px-1.5 py-0.5 shadow-sm rounded-sm animate-pulse">Kit Incl.</div>
                         <div class="absolute top-3 left-3 z-10 bg-white border border-gray-200 text-premium-dark text-[8px] uppercase tracking-[0.15em] px-1.5 py-0.5 shadow-sm">P2P Rental</div>
@@ -377,7 +376,7 @@
             </section>
         </div>
 
-        <!-- 9. CREATOR TOOLS (All 4 Cards) -->
+        <!-- 10. CREATOR TOOLS (All 4 Cards) -->
         <section class="pt-24 pb-6 mt-10 border-t border-gray-300">
             <div class="flex justify-between items-end mb-8">
                 <div>
@@ -431,7 +430,7 @@
         </section>
     </main>
 
-    <!-- 10. PREMIUM FOOTER -->
+    <!-- 11. PREMIUM FOOTER -->
     <footer class="bg-white border-t border-gray-200 py-12 px-6 mt-10">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
@@ -455,10 +454,10 @@
         </div>
     </footer>
 
-    <!-- 11. FULL SUPABASE & APPLICATION LOGIC SCRIPT (DO NOT REMOVE OR EDIT) -->
+    <!-- 12. FULL SUPABASE & APPLICATION LOGIC SCRIPT (DO NOT REMOVE OR EDIT) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase DB Connection
+        // Supabase DB Connection (Ensure your RLS policies allow inserts!)
         const SUPABASE_URL = 'https://iiophmxrnhsjygxfzvyx.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpb3BobXhybmhzanlneGZ6dnl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk5OTcsImV4cCI6MjA5NTYyNTk5N30.eHMjLv0Z5VhxXJCDMc09Uta-vaRlFzz9hdHFIQZ-xrg';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -468,12 +467,13 @@
         let currentOrderPayload = {};
         let isLoginMode = true; 
 
-        // PWA Install Prompt Logic (Moved to Premium Navbar Button)
+        // ==========================================
+        // PWA Install Prompt Logic (Always accessible via Navbar)
+        // ==========================================
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e;
-            document.getElementById('install-btn').classList.remove('hidden'); // Show Navbar Install Button
         });
         
         document.getElementById('install-btn').addEventListener('click', async () => {
@@ -481,26 +481,35 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if(outcome === 'accepted') {
-                    document.getElementById('install-btn').classList.add('hidden');
+                    console.log("App installed successfully");
                 }
                 deferredPrompt = null;
             } else {
-                showToast("App is already installed or use browser menu to Add to Home Screen.");
+                showToast("To install: Use your browser's 'Add to Home Screen' menu ✨");
             }
         });
 
+        // ==========================================
         // Toast Feedback System
+        // ==========================================
         function showToast(message, type = "success") {
             const c = document.getElementById('toast-container');
             const t = document.createElement('div');
             t.className = `bg-premium-dark text-white px-6 py-3 rounded-sm shadow-2xl text-[11px] uppercase tracking-widest font-medium toast-enter flex items-center gap-3`;
-            t.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>${message}</span>`;
+            
+            const icon = type === "error" 
+                ? `<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`
+                : `<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            
+            t.innerHTML = `${icon} <span>${message}</span>`;
             c.appendChild(t);
             setTimeout(() => t.classList.add('toast-enter-active'), 10);
             setTimeout(() => { t.classList.remove('toast-enter-active'); t.classList.add('toast-leave-active'); setTimeout(() => t.remove(), 300); }, 3500);
         }
 
+        // ==========================================
         // Modals Toggle
+        // ==========================================
         function toggleAuthModal() { document.getElementById('auth-modal').classList.toggle('hidden'); }
         
         function toggleAuthMode() {
@@ -517,7 +526,9 @@
             if(!document.getElementById('orders-modal').classList.contains('hidden')) fetchMyOrders();
         }
 
+        // ==========================================
         // Razorpay Checkout Modal Engine
+        // ==========================================
         function initiateCheckout(productName, price, type) {
             if (!currentUser) { toggleAuthModal(); return showToast("Login required to purchase"); }
             currentOrderPayload = { name: productName, price: price, type: type };
@@ -525,6 +536,7 @@
             document.getElementById('checkout-item-price').innerText = `₹${price}`;
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
+        
         function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
         
         async function processPayment() {
@@ -540,11 +552,13 @@
                 btn.innerText = originalText;
                 
                 if (!error) showToast(`Payment Successful! ${currentOrderPayload.name} ordered.`);
-                else showToast("Database RLS Error: Check SQL settings", "error");
+                else showToast("Database Error: " + error.message, "error");
             }, 1500);
         }
 
+        // ==========================================
         // Fetch Orders (Real-time DB)
+        // ==========================================
         async function fetchMyOrders() {
             const container = document.getElementById('orders-list-container');
             container.innerHTML = '<p class="text-center text-xs text-gray-400 mt-6 animate-pulse">Syncing dashboard...</p>';
@@ -571,7 +585,9 @@
             }
         }
 
-        // Live Products Loading (Cheapest vs Local Separation)
+        // ==========================================
+        // Live Products Loading
+        // ==========================================
         async function loadLiveProducts() {
             const cheapContainer = document.getElementById('cheapest-products');
             const localContainer = document.getElementById('local-products');
@@ -602,7 +618,9 @@
             }
         }
 
-        // AR Profile Engine (Camera + Photo + 35mm Studio + Power Fit)
+        // ==========================================
+        // AR Profile Engine (Camera + Studio + Fit)
+        // ==========================================
         async function toggleProfileModal() {
             if (!currentUser) return showToast("Login required for AR Setup", "error");
             const modal = document.getElementById('profile-modal');
@@ -613,7 +631,7 @@
                 document.getElementById('ar-video-feed').classList.remove('hidden');
                 document.getElementById('scan-line').classList.remove('hidden');
                 
-                calculatePowerFit(); // Run fit check calculation
+                calculatePowerFit(); 
                 
                 try {
                     arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
@@ -635,7 +653,7 @@
                 document.getElementById('ar-video-feed').classList.add('hidden');
                 const img = document.getElementById('ar-uploaded-img');
                 img.classList.remove('hidden'); 
-                img.classList.remove('cinematic-35mm'); // Reset filter
+                img.classList.remove('cinematic-35mm'); 
                 
                 document.getElementById('ar-status-text').innerText = "Analyzing Dimensions...";
                 
@@ -645,7 +663,7 @@
                     setTimeout(() => {
                         document.getElementById('scan-line').classList.add('hidden');
                         document.getElementById('ar-status-text').innerText = "Dimensions Extracted. Map Ready.";
-                        document.getElementById('cinematic-controls').classList.remove('hidden'); // Show 35mm button
+                        document.getElementById('cinematic-controls').classList.remove('hidden');
                     }, 1500);
                 }
                 r.readAsDataURL(file);
@@ -666,7 +684,9 @@
             else box.innerHTML = "Standard proportions. <b class='text-green-400'>True to Size (M/L)</b>.";
         }
 
+        // ==========================================
         // Auth, Session & Data Personalization
+        // ==========================================
         async function handleAuth() {
             const email = document.getElementById('email-input').value;
             const password = document.getElementById('password-input').value;
@@ -713,7 +733,6 @@
                     if(data.style_preference) {
                         document.getElementById('profile-style').value = data.style_preference;
                         
-                        // Change Feed Title dynamically based on preference
                         const titles = { 
                             'old_money': 'Curated: Old Money Finds', 
                             'vintage_leather': 'Curated: Vintage Edgy', 
@@ -745,7 +764,9 @@
             }
         }
 
+        // ==========================================
         // Boot Application
+        // ==========================================
         checkSession(); 
         loadLiveProducts();
     </script>
