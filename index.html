@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetica | Ultimate Creator Super-App</title>
     
-    <!-- PWA Setup (For Install App Feature) -->
+    <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#E8E8E8">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+    
+    <!-- EXTERNAL APP LOGO (Favicon / Browser Tab) -->
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     
     <!-- Fonts & Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,9 +60,10 @@
     <!-- 2. MAIN NAVIGATION BAR -->
     <nav class="bg-[#E8E8E8]/95 backdrop-blur-md px-6 py-4 sticky top-0 z-50 border-b border-gray-300">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-6">
-            <!-- RESTORED: Text Brand Logo & Location -->
+            
+            <!-- INTERNAL TEXT LOGO & LOCATION (Unchanged & Clean) -->
             <div class="flex-shrink-0 flex items-center space-x-4">
-                <span class="text-2xl font-serif font-semibold tracking-[0.15em] uppercase text-premium-dark cursor-pointer hover:opacity-80 transition-opacity">Aesthetica.</span>
+                <span class="text-2xl font-serif font-semibold tracking-[0.15em] text-premium-dark cursor-pointer hover:opacity-80 transition-opacity">Aesthetica.</span>
                 <div class="hidden md:flex items-center space-x-1 text-[10px] uppercase tracking-widest font-medium border-l border-gray-400 pl-4">
                     <span class="opacity-60">📍</span>
                     <span class="border-b border-premium-dark pb-0.5 hover:text-premium-muted cursor-pointer transition-colors">Patna</span>
@@ -76,7 +79,7 @@
             <!-- Profile Menus & Auth -->
             <div class="flex items-center gap-4 md:gap-6">
                 
-                <!-- RESTORED & PERMANENTLY VISIBLE: Premium Install App Button -->
+                <!-- PWA Install App Button (Visible in Navbar) -->
                 <button id="install-btn" class="font-serif italic text-sm md:text-[15px] font-medium tracking-wide text-premium-dark border-b border-premium-dark hover:opacity-70 transition-all cursor-pointer">
                     Install App ✨
                 </button>
@@ -468,7 +471,7 @@
         let isLoginMode = true; 
 
         // ==========================================
-        // PWA Install Prompt Logic (Always accessible via Navbar)
+        // PWA Install Prompt Logic (Always visible in Navbar)
         // ==========================================
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
